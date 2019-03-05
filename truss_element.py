@@ -10,6 +10,7 @@ class Truss_Element(Element):
     def setup(self):
         self.nn = 2
         self.ndof = 2
+        self.edof = 4
         self.element_type = 1
     
     def shape_function_value(self):

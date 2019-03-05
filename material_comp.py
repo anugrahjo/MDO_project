@@ -15,7 +15,8 @@ class MaterialComp(ExplicitComponent):
         self.add_input('v12')
         self.add_input('v13')
         self.add_input('v23')
-        self.add_output('stiffness_matrix')
+        self.add_output('C')
+        self.declare_partials('C', '*')
         
     def compute(self, inputs, outputs):
         E1 = inputs['E1']
@@ -41,4 +42,23 @@ class MaterialComp(ExplicitComponent):
         stiffness[3][3] = .5/G23
         stiffness[4][4] = .5/G13
         stiffness[5][5] = .5/G12
-        outputs['stiffness_matrix'] = stiffness
+
+        outputs['C'] = np.linalg.inv(stiffness)
+
+    def compute_partials(self, inputs, partials):
+        E1 = inputs['E1']
+        E2 = inputs['E2']
+        E3 = inputs['E3']
+        G12 = inputs['G12']
+        G13 = inputs['G13']
+        G23 = inputs['G23']
+        v12 = inputs['v12']
+        v13 = inputs['v13']
+        v23 = inputs['v23']
+
+        partials['C', '*'] = 0
+
+
+if __name__ == '__main__':
+    from openmdao.api import Problem, Group, IndepVarComp
+    pass
