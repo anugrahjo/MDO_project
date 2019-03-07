@@ -39,7 +39,7 @@ class TComp(ExplicitComponent):
             theta_lz_gy =
             theta_lz_gz =
 
-            Tr= 
+            Tr = 
 
         outputs['T'] = Tr
 
