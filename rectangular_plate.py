@@ -5,6 +5,7 @@ from gauss_points import Gauss_Points
 
 import numpy as np
 
+
 class Rectangular_Element(Element):
 
     def setup(self):
