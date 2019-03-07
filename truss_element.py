@@ -11,25 +11,31 @@ class Truss_Element(Element):
         self.nn = 2
         self.ndof = 2
         self.edof = 4
+        self.ng = 2
         self.element_type = 1
     
     def shape_function_value(self):
-        G, W = Gauss_Points(2)
-        N_value = np.zeros((2, 1, 2))
-        for i in range(2):
+        nn = self.nn
+        ng = self.ng
+        G, W = Gauss_Points(ng)
+        N_value = np.zeros((ng, 1, nn))
+        for i in range(ng):
             N_value[i] = Shape_Function(2, G[i])
 
         return N_value
 
     def shape_function_partial(self):
-        G, W = Gauss_Points(2)
-        pN_value = np.zeros((2, 1, 2))
-        for i in range(2):
-            pN_value[i] = Diff_Shape_Function(2, G[i])
+        nn = self.nn
+        ng = self.ng
+        G, W = Gauss_Points(ng)
+        pN_value = np.zeros((ng, 1, nn))
+        for i in range(ng):
+            pN_value[i] = Diff_Shape_Function(nn, G[i])
         print(pN_value)
         return pN_value
 
-
+truss = Truss_Element()
+truss.shape_function_partial()
         
 
 
