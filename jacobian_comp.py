@@ -4,14 +4,6 @@ from mesh import Mesh
 from element import Element
 
 
-# mesh = Mesh()
-# EFT = mesh.EFT()
-# Node_Coords = mesh.Node_Coords
-
-# ele = Element()
-# pN = ele.shape_function_partial()
-
-
 import numpy as np
 
 class JacobianComp(ExplicitComponent):
@@ -35,7 +27,7 @@ class JacobianComp(ExplicitComponent):
         self.add_input('Node_Coords', shape=(NN, NDIM))
 
         self.add_output('J', shape=(NEL, ng, NDIM, NDIM))
-        self.declare_partials('J', '*')
+        self.declare_partials('J', '*', val=0)
 
     def compute(self, inputs, outputs):
         ng = self.options['ng']
@@ -64,11 +56,7 @@ class JacobianComp(ExplicitComponent):
         outputs['J'] = J
 
     def compute_partials(self, inputs, partials):
-        pN = inputs['pN']
-        EFT = inputs['EFT']
-        Node_Coords = inputs['Node_Coords']
-
-        partials['J', '*'] = 0
+        pass
 
 
 if __name__ == '__main__':
@@ -85,3 +73,9 @@ if __name__ == '__main__':
     prob.check_partials(compact_print=True)
 
 
+# mesh = Mesh()
+# EFT = mesh.EFT()
+# Node_Coords = mesh.Node_Coords
+
+# ele = Element()
+# pN = ele.shape_function_partial()
