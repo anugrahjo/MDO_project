@@ -23,7 +23,7 @@ class JacobianComp(ExplicitComponent):
         NEL = self.options['NEL']
 
         self.add_input('pN', shape=(NEL, ng, NDIM, max_nn))
-        self.add_input('EFT', shape=(NEL, max_nn))
+        self.add_input('ENT', shape=(NEL, max_nn))
         self.add_input('Node_Coords', shape=(NN, NDIM))
 
         self.add_output('J', shape=(NEL, ng, NDIM, NDIM))
@@ -36,20 +36,19 @@ class JacobianComp(ExplicitComponent):
         NEL = self.options['NEL']
 
         pN = inputs['pN']
-        EFT = inputs['EFT']
+        ENT = inputs['ENT']
         Node_Coords = inputs['Node_Coords']
         J = np.zeros((NEL, ng, NDIM, NDIM))
 
         for i in range(NEL):
-            eft_position = np.array(np.where(EFT[i]>-1))
-            nn = eft_position.shape[1]
-            eft = np.zeros(nn)
-            for k in range(nn):
-                eft[k] = EFT[i][eft_position[0][k]]
+            ent_position = np.where(ENT[i]>-1)
+            ent_position = ent_position[0]
+            nn = ent_position.shape[0]
+            ent = ENT[i][0:nn]
             pN_ele = pN[i][:][:][0:nn]
             coords_ele = np.zeros((nn, NDIM))
             for j in range(nn):
-                position = int(eft[j])
+                position = int(ent[j])
                 coords_ele[j] = Node_Coords[position]
             J[i] = np.einsum('ijk, km -> ijm', pN_ele, coords_ele)
 
