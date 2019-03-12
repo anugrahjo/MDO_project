@@ -1,10 +1,16 @@
 
+<<<<<<< HEAD
+from openmdao.api import ExplicitComponent
+from mesh import Mesh
+from element import Element
+=======
 
 from openmdao.api import ExplicitComponent
 from mesh import Mesh
 from element import Element
 
 
+>>>>>>> 4b7847b114bd6c1038c758a871f7c1e7c9f8f412
 
 import numpy as np
 from truss_element import TrussElement
@@ -20,14 +26,33 @@ class BComp(ExplicitComponent):
         self.options.declare('NDIM', types=int)         # defined in the problem, constant for all elements.
         self.options.declare('max_nn', types=int)
         self.options.declare('NEL', types=int)
+<<<<<<< HEAD
+        self.options.declare('max_edof', types=int)         
+        self.options.declare('problem_type', types=str)
+        self.options.declare('pN')
+=======
         self.options.declare('max_edof', types=int)
         self.options.declare('n_D', types=int)          # defined in the problem, the number of columns of D
         self.options.declare('problem_type', types=str)
 
+>>>>>>> 4b7847b114bd6c1038c758a871f7c1e7c9f8f412
 
     def setup(self):
         ng = self.options['ng']
         NDIM = self.options['NDIM']
+<<<<<<< HEAD
+        NEL = self.options['NEL']
+        max_edof = self.options['max_edof']
+        problem_type = self.options['problem_type']
+        if problem_type == 'plane_stress' or 'plane_strain':
+            n_D = 3
+        if problem_type == 'truss':
+            n_D = 1
+        self.add_input('J', shape=(NEL, ng, NDIM, NDIM))
+        self.add_output('B', shape=(NEL, ng, n_D, max_edof))
+        self.declare_partials('B', '*', val=0)
+
+=======
         max_nn = self.options['max_nn']
         NEL = self.options['NEL']
         max_edof = self.options['max_edof']
@@ -40,6 +65,7 @@ class BComp(ExplicitComponent):
 
         self.declare_partials('B', '*', val=0)
 
+>>>>>>> 4b7847b114bd6c1038c758a871f7c1e7c9f8f412
 
     def compute(self, inputs, outputs):
         ng = self.options['ng']
@@ -47,6 +73,35 @@ class BComp(ExplicitComponent):
         max_nn = self.options['max_nn']
         NEL = self.options['NEL']
         max_edof = self.options['max_edof']
+<<<<<<< HEAD
+        problem_type = self.options['problem_type']
+        pN = self.options['pN']
+
+        J = inputs['J']
+
+        if problem_type == 'plane_stress' or 'plane_strain':
+            B = np.zeros((NEL, ng, 3, max_edof))
+            for i in range(NEL):
+                pN[i] = ele.shape_function_partial()
+                for j in range(ng):
+                    J[i][j] = np.identity(NDIM)
+                    pN_ele_global = np.dot(np.linalg.inv(J[i][j]), pN[i][j])
+                    for k in range(max_nn):
+                        B[i][j][0][2*k] = pN_ele_global[0][k]
+                        B[i][j][1][2*k+1] = pN_ele_global[1][k]
+                        B[i][j][2][2*k] = pN_ele_global[1][k]
+                        B[i][j][2][2*k+1] = pN_ele_global[0][k]
+
+
+        if problem_type == 'truss':
+            B = np.zeros((NEL, ng, 1, max_edof))
+            for i in range(NEL):
+                for j in range(ng):
+                    B[i][j][0][0:2] = [-1/2, 1/2]
+
+        outputs['B'] = B
+
+=======
         n_D = self.options['n_D']
         problem_type = self.options['problem_type']
 
@@ -76,6 +131,7 @@ class BComp(ExplicitComponent):
 
         outputs['B'] = B
 
+>>>>>>> 4b7847b114bd6c1038c758a871f7c1e7c9f8f412
 
     def compute_partials(self, inputs, partials):
         pass
@@ -103,5 +159,9 @@ if __name__ == '__main__':
 # BTDB = np.einsum('ijlk, ijlm -> ikm', B, DB)
 
 # print(DB)
+<<<<<<< HEAD
+# print(BTDB)
+=======
 # print(BTDB)
 
+>>>>>>> 4b7847b114bd6c1038c758a871f7c1e7c9f8f412

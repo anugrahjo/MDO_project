@@ -4,16 +4,17 @@ from openmdao.api import ExplicitComponent
 import numpy as np
 
 class DComp(ExplicitComponent):
-
+    def initialize(self):
+        self.options.declare('C')
+        self.options.declare('problem_type')
     def setup(self):
-        self.add_input('C')
-        self.add_input('problem_type')
+        self.options.declare('C')
         self.add_output('D')
         self.declare_partials('D', '*')
         
     def compute(self, inputs, outputs):
-        C = inputs['C']
-        problem_type = inputs['problem_type']
+        C = self.options['C']
+        problem_type = self.options['problem_type']
         if problem_type == 'plane_stress':
             D = np.zeros((3,3))
             D[0][0] = C[0][0] - C[0][2] ** 2 / C[2][2]
@@ -37,6 +38,4 @@ class DComp(ExplicitComponent):
         outputs['D'] = D
 
     def compute_partials(self, inputs, partials):
-        C = inputs['C']
-
-        partials['D', 'C'] = 0
+        pass

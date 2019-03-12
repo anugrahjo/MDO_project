@@ -1,4 +1,3 @@
-
 from openmdao.api import ExplicitComponent
 from mesh import Mesh
 from element import Element
@@ -11,20 +10,16 @@ class JacobianComp(ExplicitComponent):
     def initialize(self):
         self.options.declare('ng', types=int)
         self.options.declare('NDIM', types=int)         # defined in the problem, constant for all elements.
-        self.options.declare('max_nn', types=int)
-        self.options.declare('NN', types=int)
         self.options.declare('NEL', types=int)
+        self.options.declare('pN', types=int)
+        self.options.declare('ENT', types=int)
+        self.options.declare('Node_Coords', types=int)
+
 
     def setup(self):
         ng = self.options['ng']
         NDIM = self.options['NDIM']
-        max_nn = self.options['max_nn']
-        NN = self.options['NN']
         NEL = self.options['NEL']
-
-        self.add_input('pN', shape=(NEL, ng, NDIM, max_nn))
-        self.add_input('ENT', shape=(NEL, max_nn))
-        self.add_input('Node_Coords', shape=(NN, NDIM))
 
         self.add_output('J', shape=(NEL, ng, NDIM, NDIM))
         self.declare_partials('J', '*', val=0)
@@ -32,12 +27,11 @@ class JacobianComp(ExplicitComponent):
     def compute(self, inputs, outputs):
         ng = self.options['ng']
         NDIM = self.options['NDIM']
-        max_nn = self.options['max_nn']
         NEL = self.options['NEL']
 
-        pN = inputs['pN']
-        ENT = inputs['ENT']
-        Node_Coords = inputs['Node_Coords']
+        pN = self.options['pN']
+        ENT = self.options['ENT']
+        Node_Coords = self.options['Node_Coords']
         J = np.zeros((NEL, ng, NDIM, NDIM))
 
         for i in range(NEL):
@@ -69,5 +63,9 @@ if __name__ == '__main__':
     prob.run_model()
     prob.model.list_outputs()
     print(prob['J'])
+<<<<<<< HEAD
+    prob.check_partials(compact_print=True)
+=======
     prob.check_partials(compact_print=True)
 
+>>>>>>> 4b7847b114bd6c1038c758a871f7c1e7c9f8f412

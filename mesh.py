@@ -1,10 +1,16 @@
 
 import numpy as np
+from shape_functions import Shape_Function, Diff_Shape_Function
+from gauss_points import Gauss_Points
+from truss_element import TrussElement
+from rectangular_plate import RectangularElement
 
 class Mesh():
 
     def __init__(self):
         self.NEL = 0                                #total num of elements in the mesh
+        self.num_elem_types = 0                     #keeps track of num of elem types in the mesh
+        self.elem_types_in_mesh = np.array([])      #keeps track of all elem types in the mesh
         self.NN = 0                                 #total num of nodes in the mesh
         self.ndof = 0                               #num of dof for each node in the mesh(Problem Dependent)
         self.max_nn = 0                             #num of nodes per element for element type with max num of nodes
@@ -16,6 +22,8 @@ class Mesh():
         self.S = np.array([])                       #max. num of dof per element is set as max_edof
         self.Node_Coords = np.array([])             #Coords of each node in the mesh
         self.Elem_Group_Dict = np.array([])         #element type of each element in the mesh
+        self.pN = np.array([])                      #partials of shape functions for each element group
+        
 
     def set_nodes(self, node_coords, ndof):
         num_new_nodes = node_coords.shape[0]
@@ -24,15 +32,16 @@ class Mesh():
             self.NDIM = node_coords.shape[1]
             self.Node_Coords = node_coords * 1
             self.ndof = ndof
+            self.num_elem_type = 1
         else:
             self.Node_Coords = np.append(self.Node_Coords, node_coords, axis = 0)
         
         
 
     # DOF_index and node_index starting from 1
-    def add_elem_group(self, ent ,elem_class): 
+    def add_elem_group(self, ent ,elem_type): 
         ndof = self.ndof * 1
-        elem_type = elem_class.elem_type
+        # elem_type = elem_class.element_type
         nn = ent.shape[1]
         old_max_nn = self.max_nn *1
         if nn >= self.max_nn:
@@ -50,15 +59,18 @@ class Mesh():
         self.NDOF += new_dof
         NEL = self.NEL*1
         NDOF = self.NDOF*1
-        elem_group_dict = np.full((nel,1), elem_type)
-        if self.Elem_Group_Dict == np.array([]): 
+        elem_group_dict = np.full((nel), elem_type)
+        if self.Elem_Group_Dict.size == 0: 
             self.Elem_Group_Dict = elem_group_dict * 1
         else:
             self.Elem_Group_Dict = np.append(self.Elem_Group_Dict, elem_group_dict, axis = 0 )
 
+        self.elem_types_in_mesh = np.unique(self.Elem_Group_Dict)   #slow as traversing the entire array
+        self.num_elem_types = self.elem_types_in_mesh.size
+
         ent_temp = np.full((nel,max_nn), -1)
         ent_temp[:, 0:nn] = ent*1
-        if self.ENT == np.array([]):
+        if self.ENT.size == 0: 
             self.ENT = ent_temp * 1
         else:
             ENT_temp = np.full((old_NEL,max_nn), -1)
@@ -76,7 +88,7 @@ class Mesh():
         eft = eft + dummy
         eft_temp = np.full((nel,max_edof), -1)     
         eft_temp[:, 0:edof] = eft
-        if self.EFT == np.array([]):
+        if self.EFT.size == 0: 
             self.EFT = eft_temp * 1
         else:
             EFT_temp = np.full((old_NEL, max_edof), -1)
@@ -99,6 +111,28 @@ class Mesh():
         #     self.S = S_temp * 1 
         # else:
         #     self.S = np.append(self.S, S_temp, axis = 0)
+
+
+    def add_elem_group_partials(self):
+        pN = np.zeros((self.NEL, 4, self.NDIM, self.max_nn)) #ng_max = 4 for rectangular element with 2 gps in 2 directions
+
+        for i in range(self.NEL):
+            if i != 0:
+                if self.Elem_Group_Dict[i] != self.Elem_Group_Dict[i-1]:
+                        if self.Elem_Group_Dict[i] == 1:
+                            pN[i] = TrussElement.shape_function_partial
+                            
+                        elif self.Elem_Group_Dict[i] == 2: #add more elem groups
+                            pN[i] = RectangularElement.shape_function_partial
+                else: 
+                    pN[i] = pN[i-1]
+            
+            else:
+                        if self.Elem_Group_Dict[i] == 1:
+                            pN[i] = TrussElement.shape_function_partial
+                            
+                        elif self.Elem_Group_Dict[i] == 2: #add more elem groups
+                            pN[i] = RectangularElement.shape_function_partial
 
 
 
