@@ -57,7 +57,6 @@ class RectangularElement(Element):
 
         return pN_value
 
-<<<<<<< HEAD
     def gaussian_weights(self):
         ng = self.ng
         G, W = Gauss_Points(ng)
@@ -85,5 +84,3 @@ class RectangularElement(Element):
 # pN_value_i = [[-1/4 * (1 - eta), 1/4 * (1 - eta), 1/4 * (1 + eta), -1/4 * (1 + eta)], [-1/4 * (1 - xi), -1/4 * (1 + xi), 1/4 * (1 + xi), 1/4 * (1 - xi)]]
 #
 # print(pN_value_i)
-=======
->>>>>>> 4b7847b114bd6c1038c758a871f7c1e7c9f8f412

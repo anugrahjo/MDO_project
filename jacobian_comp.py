@@ -63,9 +63,4 @@ if __name__ == '__main__':
     prob.run_model()
     prob.model.list_outputs()
     print(prob['J'])
-<<<<<<< HEAD
     prob.check_partials(compact_print=True)
-=======
-    prob.check_partials(compact_print=True)
-
->>>>>>> 4b7847b114bd6c1038c758a871f7c1e7c9f8f412
