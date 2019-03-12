@@ -71,10 +71,3 @@ if __name__ == '__main__':
     print(prob['J'])
     prob.check_partials(compact_print=True)
 
-
-# mesh = Mesh()
-# EFT = mesh.EFT()
-# Node_Coords = mesh.Node_Coords
-
-# ele = Element()
-# pN = ele.shape_function_partial()

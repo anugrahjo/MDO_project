@@ -5,7 +5,7 @@ from gauss_points import Gauss_Points
 
 import numpy as np
 
-class Truss_Element(Element):
+class TrussElement(Element):
     
     def setup(self):
         self.nn = 2
@@ -34,8 +34,5 @@ class Truss_Element(Element):
         print(pN_value)
         return pN_value
 
-truss = Truss_Element()
-truss.shape_function_partial()
-        
 
 

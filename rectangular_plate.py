@@ -6,7 +6,7 @@ from gauss_points import Gauss_Points
 import numpy as np
 
 
-class Rectangular_Element(Element):
+class RectangularElement(Element):
 
     def setup(self):
         self.nn = 4
@@ -56,20 +56,3 @@ class Rectangular_Element(Element):
 
         return pN_value
 
-
-# rec = Rectangular_Element()
-# print(rec.shape_function_partial())
-
-# ------------------
-# for value check
-
-# xi = -0.57735
-# eta = -0.57735
-# N_xi_1 = 1/2*(1-xi)
-# N_xi_2 = 1/2*(1+xi)
-# N_eta_1 = 1/2*(1-eta)
-# N_eta_2 = 1/2*(1+eta)
-# N_i = [N_xi_1 * N_eta_1, N_xi_2 * N_eta_1, N_xi_2*N_eta_2, N_xi_1 * N_eta_2]
-# pN_value_i = [[-1/4 * (1 - eta), 1/4 * (1 - eta), 1/4 * (1 + eta), -1/4 * (1 + eta)], [-1/4 * (1 - xi), -1/4 * (1 + xi), 1/4 * (1 + xi), 1/4 * (1 - xi)]]
-#
-# print(pN_value_i)
