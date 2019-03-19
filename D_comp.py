@@ -5,12 +5,10 @@ import numpy as np
 
 class DComp(ExplicitComponent):
     def initialize(self):
-        self.options.declare('C')
-        self.options.declare('problem_type')
+        self.options.declare('C', np.ndarray)
+        self.options.declare('problem_type', str)
     def setup(self):
-        self.options.declare('C')
-        self.add_output('D')
-        self.declare_partials('D', '*')
+        self.add_output('D', shape =(3,3))
         
     def compute(self, inputs, outputs):
         C = self.options['C']
@@ -27,7 +25,7 @@ class DComp(ExplicitComponent):
         if problem_type == 'plane_strain':
             D = np.zeros((3,3))
             D[0][0] = C[0][0] 
-            D[1][1] = C[1][1] 
+            D[1][1] = C[1][1]
             D[0][1] = C[0][1] 
             D[1][0] = C[0][1] 
             D[2][2] = C[3][3]
@@ -36,6 +34,3 @@ class DComp(ExplicitComponent):
             D = C[0][0]
 
         outputs['D'] = D
-
-    def compute_partials(self, inputs, partials):
-        pass

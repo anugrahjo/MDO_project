@@ -11,9 +11,9 @@ class JacobianComp(ExplicitComponent):
         self.options.declare('ng', types=int)
         self.options.declare('NDIM', types=int)         # defined in the problem, constant for all elements.
         self.options.declare('NEL', types=int)
-        self.options.declare('pN', types=int)
-        self.options.declare('ENT', types=int)
-        self.options.declare('Node_Coords', types=int)
+        self.options.declare('pN', types=np.ndarray)
+        self.options.declare('ENT', types=np.ndarray )
+        self.options.declare('Node_Coords', types=np.ndarray)
 
 
     def setup(self):
@@ -21,8 +21,8 @@ class JacobianComp(ExplicitComponent):
         NDIM = self.options['NDIM']
         NEL = self.options['NEL']
 
-        self.add_output('J', shape=(NEL, ng, NDIM, NDIM))
-        self.declare_partials('J', '*', val=0)
+        self.add_output('J', shape=(NEL, ng**2, NDIM, NDIM))
+        # self.declare_partials('J', '*', method = 'cs')
 
     def compute(self, inputs, outputs):
         ng = self.options['ng']
@@ -32,7 +32,7 @@ class JacobianComp(ExplicitComponent):
         pN = self.options['pN']
         ENT = self.options['ENT']
         Node_Coords = self.options['Node_Coords']
-        J = np.zeros((NEL, ng, NDIM, NDIM))
+        J = np.zeros((NEL, ng**2, NDIM, NDIM))          ## ng ** 2 for rectangular elements
 
         for i in range(NEL):
             ent_position = np.where(ENT[i]>-1)
@@ -43,7 +43,8 @@ class JacobianComp(ExplicitComponent):
             coords_ele = np.zeros((nn, NDIM))
             for j in range(nn):
                 position = int(ent[j])
-                coords_ele[j] = Node_Coords[position]
+                coords_ele[j] = Node_Coords[position - 1]
+            np.einsum('ijk, km -> ijm', pN_ele, coords_ele)
             J[i] = np.einsum('ijk, km -> ijm', pN_ele, coords_ele)
 
         outputs['J'] = J

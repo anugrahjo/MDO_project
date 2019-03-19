@@ -31,7 +31,6 @@ class TrussElement(Element):
         pN_value = np.zeros((ng, 1, nn))
         for i in range(ng):
             pN_value[i] = Diff_Shape_Function(nn, G[i])
-        print(pN_value)
         return pN_value
 
 

@@ -19,7 +19,7 @@ class BComp(ExplicitComponent):
         self.options.declare('NEL', types=int)
         self.options.declare('max_edof', types=int)         
         self.options.declare('problem_type', types=str)
-        self.options.declare('pN')
+        self.options.declare('pN', types=np.ndarray)
 
     def setup(self):
         ng = self.options['ng']
@@ -31,9 +31,9 @@ class BComp(ExplicitComponent):
             n_D = 3
         if problem_type == 'truss':
             n_D = 1
-        self.add_input('J', shape=(NEL, ng, NDIM, NDIM))
-        self.add_output('B', shape=(NEL, ng, n_D, max_edof))
-        self.declare_partials('B', '*', val=0)
+        self.add_input('J', shape=(NEL, ng**2, NDIM, NDIM))
+        self.add_output('B', shape=(NEL, ng**2, n_D, max_edof))
+        self.declare_partials('B', '*', method = 'cs')
 
 
     def compute(self, inputs, outputs):
@@ -48,10 +48,10 @@ class BComp(ExplicitComponent):
         J = inputs['J']
 
         if problem_type == 'plane_stress' or 'plane_strain':
-            B = np.zeros((NEL, ng, 3, max_edof))
+            B = np.zeros((NEL, ng**2, 3, max_edof))
             for i in range(NEL):
                 pN[i] = ele.shape_function_partial()
-                for j in range(ng):
+                for j in range(ng**2):
                     J[i][j] = np.identity(NDIM)
                     pN_ele_global = np.dot(np.linalg.inv(J[i][j]), pN[i][j])
                     for k in range(max_nn):
@@ -70,8 +70,8 @@ class BComp(ExplicitComponent):
         outputs['B'] = B
 
 
-    def compute_partials(self, inputs, partials):
-        pass
+    # def compute_partials(self, inputs, partials):
+    #     pass
 
 
 if __name__ == '__main__':

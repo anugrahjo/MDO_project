@@ -10,7 +10,7 @@ class RectangularElement(Element):
 
     def setup(self):
         self.nn = 4
-        self.nn_per_dim = self.nn/2
+        self.nn_per_dim = int(self.nn/2)
         self.ndof = 2
         self.edof = 8
         self.ng = 2
@@ -63,6 +63,7 @@ class RectangularElement(Element):
         w_xi = np.array([W[0], W[1], W[0], W[1]])
         w_eta = np.array([W[0], W[0], W[1], W[1]])
         W = np.multiply(w_xi, w_eta)
+        W = W.reshape(ng**2)
 
         return W
 
