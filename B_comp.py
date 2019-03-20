@@ -55,10 +55,11 @@ class BComp(ExplicitComponent):
                     J[i][j] = np.identity(NDIM)
                     pN_ele_global = np.dot(np.linalg.inv(J[i][j]), pN[i][j])
                     for k in range(max_nn):
-                        B[i][j][0][2*k] = pN_ele_global[0][k]
-                        B[i][j][1][2*k+1] = pN_ele_global[1][k]
-                        B[i][j][2][2*k] = pN_ele_global[1][k]
-                        B[i][j][2][2*k+1] = pN_ele_global[0][k]
+                        B[i][j][0][2*k] = pN[i][j][0][k]
+                        B[i][j][1][2*k+1] = pN[i][j][1][k]
+                        B[i][j][2][2*k] = pN[i][j][1][k]
+                        B[i][j][2][2*k+1] = pN[i][j][0][k]
+
 
 
         if problem_type == 'truss':
