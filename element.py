@@ -6,11 +6,11 @@ class Element(object):
 
     def __init__(self):
         self.ndof = 0
+        self.edof = 0
         self.nn = 0
         self.ng = 0
         self.element_type = 0
         self.coord_position = np.array([])
-
         self.setup()
 
     def setup(self):

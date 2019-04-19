@@ -14,14 +14,14 @@ class JacobianComp(ExplicitComponent):
         self.options.declare('pN', types=np.ndarray)
         self.options.declare('ENT', types=np.ndarray )
         self.options.declare('Node_Coords', types=np.ndarray)
-
+D
 
     def setup(self):
         ng = self.options['ng']
         NDIM = self.options['NDIM']
         NEL = self.options['NEL']
 
-        self.add_output('J', shape=(NEL, ng**2, NDIM, NDIM))
+        self.add_output('J', shape=(NEL, ng**2, NDIM, NIM))
         # self.declare_partials('J', '*', method = 'cs')
 
     def compute(self, inputs, outputs):
