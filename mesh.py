@@ -1,9 +1,7 @@
 
 import numpy as np
-from shape_functions import Shape_Function, Diff_Shape_Function
-from gauss_points import Gauss_Points
-from truss_element import TrussElement
-from rectangular_plate import RectangularElement
+
+from element import TrussElement, RectangularElement, TriangularElement
 
 class Mesh():
 
@@ -44,7 +42,6 @@ class Mesh():
         ndof = self.ndof * 1
         # elem_type = elem_class.element_type
         nn = ent.shape[1]
-        print(nn)
         old_max_nn = self.max_nn *1
         if nn >= self.max_nn:
             self.max_nn = nn * 1
@@ -115,45 +112,69 @@ class Mesh():
         #     self.S = np.append(self.S, S_temp, axis = 0)
 
 
-    def add_elem_group_partials(self):
+    # def add_elem_group_partials(self):
         # ! problem: how to declare the option of nn and ng for each element, since there might be tens of combinations of (nn, ng) for one problem
-        # shall we add more information in Elem_Group_Dict? i.e. (type = 1 (truss), nn = 2, ng = 2)
-        T = TrussElement()
-        R = RectangularElement()
+        # shall we add more information in Elem_Group_Dict? i.e. (type = 1, 2, 3 (truss, rectangular, triangular), nn)
+
         pN = np.zeros((self.NEL, 4, self.NDIM, self.max_nn)) #ng_max = 4 for rectangular element with 2 gps in 2 directions
 
         for i in range(self.NEL):
             if i != 0:
                 if self.Elem_Group_Dict[i] != self.Elem_Group_Dict[i-1]:
-                        if self.Elem_Group_Dict[i] == 1:
-                            pN[i] = T.pN_ele
-                            
-                        elif self.Elem_Group_Dict[i] == 2: #add more elem groups
-                            pN[i] = R.pN_ele
+                    if self.Elem_Group_Dict[i] == 1:
+                        ng = 2
+                        Truss = TrussElement(nn, ng)
+                        pN[i][0:ng][:][0:nn] = Truss.pN_ele
+
+                    elif self.Elem_Group_Dict[i] == 2: #add more elem groups
+                        ng = 4
+                        Rec = RectangularElement(nn, ng)
+                        pN[i][0:ng][:][0:nn] = Rec.pN_ele
+
+                    elif self.Elem_Group_Dict[i] == 3: #add more elem groups
+                        ng = 3
+                        Tri = TriangularElement(nn, ng)
+                        pN[i][0:ng][:][0:nn] = Tri.pN_ele
+
                 else: 
                     pN[i] = pN[i-1]
             
             else:
-                        if self.Elem_Group_Dict[i] == 1:
-                            pN[i] = T.pN_ele
-                            
-                        elif self.Elem_Group_Dict[i] == 2: #add more elem groups
-                            pN[i] = R.pN_ele
+                if self.Elem_Group_Dict[i] == 1:
+                    ng = 2
+                    Truss = TrussElement(nn, ng)
+                    pN[i][0:ng][:][0:nn] = Truss.pN_ele
+
+                elif self.Elem_Group_Dict[i] == 2: #add more elem groups
+                    ng = 4
+                    Rec = RectangularElement(nn, ng)
+                    pN[i][0:ng][:][0:nn] = Rec.pN_ele
+
+                elif self.Elem_Group_Dict[i] == 3: #add more elem groups
+                    ng = 3
+                    Tri = TriangularElement(nn, ng)
+                    pN[i][0:ng][:][0:nn] = Tri.pN_ele
 
         self.pN = pN
 
-
-
-
-        
-        
-
-
-        
-        
-
-
-
     
+mesh = Mesh()
+# node_coords = np.array([[0, 0], [1, 0], [1, 1], [0, 1], [2, 0], [2, 1]])
+# ent = np.array([[1, 2, 3, 4], [2, 5, 6, 3]])
+# elem_type = 2  # rectangular
+# ndof = 2
 
-    
+# node_coords = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
+# ent = np.array([[1, 2, 4], [3, 2, 4]])
+# elem_type = 3  # triangular
+# ndof = 2
+
+# node_coords = np.array([[0, 0], [1, 0], [0, 1], [-1, 0]])
+# ent = np.array([[1, 2], [2, 3], [1, 3], [1, 4], [3, 4]])
+# elem_type = 1  # truss
+# ndof = 2
+
+# mesh.set_nodes(node_coords, ndof)
+# print(mesh.NN)
+# mesh.add_elem_group(ent, elem_type)
+# print(mesh.pN)
