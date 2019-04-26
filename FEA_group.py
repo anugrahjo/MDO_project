@@ -47,9 +47,6 @@ class FEAGroup(Group):
         f = self.options['f']
         constraints = self.options['constraints']
 
-
-
-
         # comp = ExplicitComponent()
         # comp.add_output('d', shape = (NDOF))
         # self.add_subsystem('d_comp', comp, promotes=['*'])
@@ -89,4 +86,3 @@ if __name__ == '__main__':
     prob = Problem()
     prob.model = FEAGroup()
 
-    

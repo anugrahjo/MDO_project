@@ -100,7 +100,6 @@ for i in range(NNy):
 # f[4] = f[16] = 2.5
 # f[10] = 5
 
-
 mesh = Mesh()
 mesh.set_nodes(node_coords1, ndof1)
 mesh.add_elem_group(ent1, 2)                            # 2 is element type for rectangular elements

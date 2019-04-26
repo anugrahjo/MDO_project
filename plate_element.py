@@ -2,6 +2,8 @@
 import numpy as np
 
 # initialize the properties of element classes
+
+
 class Element(object):
 
     def __init__(self, nn, ng):
@@ -12,10 +14,15 @@ class Element(object):
         self.xi = []
         self.eta = []
         self.weight = []
+        self.N = []
+        self.pN = []
 
         self.setup(nn, ng)
 
     def setup(self):
+        pass
+
+    def gauss_points(self):
         pass
 
     def shape_function_value(self):
@@ -33,9 +40,20 @@ class TrussElement(Element):
         self.nn = nn
         self.ng = ng
 
-        self.gauss_points(ng)
+        list_nn = [1, 2, 3]
+        list_ng = [2, 3]
+        if ng in list_ng:
+            if nn in list_nn:
+                self.gauss_points()
+                self.shape_function_value()
+                self.shape_function_partial()
+            else:
+                print('invalid number of nodes for the truss element')
+        else:
+            print('invalid number of Gauss points for the truss element')
 
-    def gauss_points(self, ng):
+    def gauss_points(self):
+        ng = self.ng
         xi = np.zeros(ng)
         weight = np.zeros(ng)
 
@@ -59,7 +77,6 @@ class TrussElement(Element):
 
         self.xi = xi
         self.weight = weight
-        return self.xi, self.weight
 
     def shape_function_value(self):
         nn = self.nn
@@ -70,17 +87,11 @@ class TrussElement(Element):
             N_value = np.transpose([1/2.*(1-xi), 1/2.*(1+xi)])
             N_value = np.reshape(N_value, (ng, 1, nn))
 
-            return N_value
-
         if nn == 3:
             N_value = np.transpose([1/2.*xi*(xi-1), (1-xi)*(xi+1), 1/2.*xi*(xi+1)])
             N_value = np.reshape(N_value, (ng, 1, nn))
 
-            return N_value
-
-        else:
-            print('invalid number of nodes')
-            return False
+        self.N = N_value
 
     def shape_function_partial(self):
         nn = self.nn
@@ -90,16 +101,11 @@ class TrussElement(Element):
         if nn == 2:
             pN_value = np.tile([-1/2, 1/2], (ng, 1, 1))
 
-            return pN_value
-
         if nn == 3:
             pN_value = np.transpose([1/2.*(2*xi-1), -2.*xi, 1/2.*(2*xi+1)])
             pN_value = np.reshape(pN_value, (ng, 1, nn))
-            return pN_value
 
-        else:
-            print('invalid number of nodes')
-            return False
+        self.pN = pN_value
 
 
 class RectangularElement(Element):
@@ -110,9 +116,20 @@ class RectangularElement(Element):
         self.nn = nn
         self.ng = ng
 
-        self.gauss_points(ng)
+        list_nn = [4, 6, 8, 9]
+        list_ng = [1, 4, 6, 9]
+        if ng in list_ng:
+            if nn in list_nn:
+                self.gauss_points()
+                self.shape_function_value()
+                self.shape_function_partial()
+            else:
+                print('invalid number of nodes for the rectangular element')
+        else:
+            print('invalid number of Gauss points for the rectangular element')
 
-    def gauss_points(self, ng):
+    def gauss_points(self):
+        ng = self.ng
         xi = np.zeros(ng)
         eta = np.zeros(ng)
         weight = np.zeros(ng)
@@ -147,7 +164,6 @@ class RectangularElement(Element):
         self.xi = xi
         self.eta = eta
         self.weight = weight
-        return self.xi, self.eta, self.weight
 
     def shape_function_value(self):
         nn = self.nn
@@ -158,8 +174,6 @@ class RectangularElement(Element):
         if nn == 4:
             N_value = np.transpose([1/4.*(1-xi)*(1-eta), 1/4.*(1+xi)*(1-eta), 1/4.*(1+xi)*(1+eta), 1/4.*(1-xi)*(1+eta)])
             N_value = np.reshape(N_value, (ng, 1, nn))
-
-            return N_value
 
         if nn == 6:
             N_value = np.transpose([1/4.*xi*(xi-1)*(1-eta), 1/4.*xi*(xi+1)*(1-eta), 1/4.*xi*(xi+1)*(1+eta),
@@ -173,8 +187,6 @@ class RectangularElement(Element):
                        1/2.*(1+eta)*(1-xi)*(1+xi), 1/2.*(1-xi)*(1-eta)*(1+eta)])
             N_value = np.reshape(N_value, (ng, 1, nn))
 
-            return N_value
-
         if nn == 9:
             N_value = np.transpose([1/4.*xi*(xi-1)*eta*(eta-1), 1/4.*xi*(xi+1)*eta*(eta-1),
                        1/4.*xi*(xi+1)*eta*(eta+1), 1/4.*xi*(xi-1)*eta*(eta+1),
@@ -183,11 +195,7 @@ class RectangularElement(Element):
                        (xi+1)*(1-xi)*(eta+1)*(1-eta)])
             N_value = np.reshape(N_value, (ng, 1, nn))
 
-            return N_value
-
-        else:
-            print('invalid number of nodes')
-            return False
+        self.N = N_value
 
     def shape_function_partial(self):
         nn = self.nn
@@ -201,7 +209,6 @@ class RectangularElement(Element):
             for i in range(ng):
                 pN_value[i] = [[-1/4*(1-eta[i]), 1/4*(1-eta[i]), 1/4*(1+eta[i]), -1/4*(1+eta[i])],
                                [-1/4*(1-xi[i]), -1/4.*(1+xi[i]), 1/4.*(1+xi[i]), 1/4.*(1-xi[i])]]
-            return pN_value
 
         if nn == 6:
             for i in range(ng):
@@ -214,7 +221,6 @@ class RectangularElement(Element):
                                 pN_xi[1] * N_eta[0], pN_xi[1] * N_eta[1]],
                                [N_xi[0] * pN_eta[0], N_xi[2] * pN_eta[0], N_xi[2] * pN_eta[1], N_xi[0] * pN_eta[1],
                                 N_xi[1] * pN_eta[0], N_xi[1] * pN_eta[1]]]
-            return pN_value
 
         if nn == 8:
             for i in range(ng):
@@ -224,8 +230,6 @@ class RectangularElement(Element):
                                 -m*(1-n), 1/2*(1-n)*(1+n), -m*(1+n), -1/2*(1-n)*(1+n)],
                                [1/4*(1-m)*(2*n+m), 1/4*(1+m)*(2*n-m), 1/4*(1+m)*(2*n+m), 1/4*(1-m)*(2*n-m),
                                 -1/2*(1-m)*(1+m), -n*(1+m), 1/2*(1-m)*(1+m), -n*(1-m)]]
-
-            return pN_value
 
         if nn == 9:
             for i in range(ng):
@@ -240,10 +244,8 @@ class RectangularElement(Element):
                                [N_xi[0] * pN_eta[0], N_xi[2] * pN_eta[0], N_xi[2] * pN_eta[2], N_xi[0] * pN_eta[2],
                                 N_xi[1] * pN_eta[0], N_xi[2] * pN_eta[1], N_xi[1] * pN_eta[2], N_xi[0] * pN_eta[1],
                                 N_xi[1] * pN_eta[1]]]
-            return pN_value
 
-        else:
-            return print('invalid number of nodes')
+        self.pN = pN_value
 
 
 class TriangularElement(Element):
@@ -253,10 +255,21 @@ class TriangularElement(Element):
         self.edof = nn * self.ndof
         self.nn = nn
         self.ng = ng
+        list_ng = [1, 3, 4]
+        list_nn = [3, 6]
 
-        self.gauss_points(ng)
+        if ng in list_ng:
+            if nn in list_nn:
+                self.gauss_points()
+                self.shape_function_value()
+                self.shape_function_partial()
+            else:
+                print('invalid number of nodes for the triangular element')
+        else:
+            print('invalid number of Gauss points for the triangular element')
 
-    def gauss_points(self, ng):
+    def gauss_points(self):
+        ng = self.ng
         xi = np.zeros(ng)
         eta = np.zeros(ng)
         weight = np.zeros(ng)
@@ -279,7 +292,6 @@ class TriangularElement(Element):
         self.xi = xi
         self.eta = eta
         self.weight = weight
-        return self.xi, self.eta, self.weight
 
     def shape_function_value(self):
         nn = self.nn
@@ -291,14 +303,13 @@ class TriangularElement(Element):
             N_value = np.transpose([1 - xi - eta, xi, eta])
             N_value = np.reshape(N_value, (ng, 1, nn))
 
-            return N_value
-
         if nn == 6:
+
             N_value = np.transpose([2.*(1-xi-eta)*(1/2-xi-eta), 2.*xi*(xi-1/2), 2.*eta*(eta-1/2),
                                     4.*(1-xi-eta)*xi, 4.*xi*eta, 4.*(1-xi-eta)*eta])
             N_value = np.reshape(N_value, (ng, 1, nn))
 
-            return N_value
+        self.N = N_value
 
     def shape_function_partial(self):
         nn = self.nn
@@ -310,25 +321,22 @@ class TriangularElement(Element):
         if nn == 3:
             pN_value = np.tile([[-1, 1, 0], [-1, 0, 1]], (ng, 1, 1))
 
-            return pN_value
-
         if nn == 6:
             for i in range(ng):
                 pN_value[i] = [[4*xi[i]+4*eta[i]-3, 4*xi[i]-1, 0, -8*xi[i]-4*eta[i]+4, 4*eta[i], -4*eta[i]],
                                [4*xi[i]+4*eta[i]-3, 0, 4*xi[i]-1, -4*xi[i], 4*xi[i], -8*eta[i]-4*xi[i]+4]]
 
-            return pN_value
+        self.pN = pN_value
+
 
 
 # truss = TrussElement(nn=2, ng=2)
-# print(truss.shape_function_value())
-# print(truss.shape_function_partial())
-
+# print(truss.N)
+# print(truss.pN)
 #
-rec = RectangularElement(nn=8, ng=4)
-#print(np.shape(rec.weight))
-print(np.sum(rec.shape_function_value()))
-
+# rec = RectangularElement(nn=4, ng=4)
+# print(rec.weight)
+# print(rec.N)
+# print(rec.pN)
 #
-# tri = TriangularElement(nn=6, ng=4)
-# print(tri.shape_function_partial())
+# tri = TriangularElement(nn=3, ng=4)

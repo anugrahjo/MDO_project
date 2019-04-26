@@ -116,6 +116,8 @@ class Mesh():
 
 
     def add_elem_group_partials(self):
+        # ! problem: how to declare the option of nn and ng for each element, since there might be tens of combinations of (nn, ng) for one problem
+        # shall we add more information in Elem_Group_Dict? i.e. (type = 1 (truss), nn = 2, ng = 2)
         T = TrussElement()
         R = RectangularElement()
         pN = np.zeros((self.NEL, 4, self.NDIM, self.max_nn)) #ng_max = 4 for rectangular element with 2 gps in 2 directions
@@ -124,19 +126,19 @@ class Mesh():
             if i != 0:
                 if self.Elem_Group_Dict[i] != self.Elem_Group_Dict[i-1]:
                         if self.Elem_Group_Dict[i] == 1:
-                            pN[i] = T.shape_function_partial()
+                            pN[i] = T.pN_ele
                             
                         elif self.Elem_Group_Dict[i] == 2: #add more elem groups
-                            pN[i] = R.shape_function_partial()
+                            pN[i] = R.pN_ele
                 else: 
                     pN[i] = pN[i-1]
             
             else:
                         if self.Elem_Group_Dict[i] == 1:
-                            pN[i] = T.shape_function_partial()
+                            pN[i] = T.pN_ele
                             
                         elif self.Elem_Group_Dict[i] == 2: #add more elem groups
-                            pN[i] = R.shape_function_partial()
+                            pN[i] = R.pN_ele
 
         self.pN = pN
 

@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
     prob = Problem()
 
-    comp = TComp(ng=2, NDIM=2, max_nn=2, NN=4, NEL=3, edof=4)
+    comp = TComp(ng=4, NDIM=2, max_nn=2, NN=4, NEL=3, edof=4)
     prob.model = comp
     prob.setup()
     prob.run_model()

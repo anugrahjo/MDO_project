@@ -14,7 +14,6 @@ class JacobianComp(ExplicitComponent):
         self.options.declare('pN', types=np.ndarray)
         self.options.declare('ENT', types=np.ndarray )
         self.options.declare('Node_Coords', types=np.ndarray)
-D
 
     def setup(self):
         ng = self.options['ng']

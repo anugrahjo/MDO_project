@@ -1,7 +1,8 @@
 import numpy as np
 
 from openmdao.api import ExplicitComponent
-from rectangular_plate import RectangularElement
+from plate_element import RectangularElement
+# from rectangular_plate import RectangularElement
 
 
 class StrainComp(ExplicitComponent):
@@ -12,7 +13,7 @@ class StrainComp(ExplicitComponent):
         self.options.declare('NDOF', types=int)
         self.options.declare('max_edof', types=int)         
         self.options.declare('problem_type', types=str)
-        self.options.declare('S', types = np.ndarray)       #shape = (NEL, max_edof, NDOF)
+        self.options.declare('S', types=np.ndarray)       #shape = (NEL, max_edof, NDOF)
 
     def setup(self):
         NDOF = self.options['NDOF']
@@ -37,7 +38,7 @@ class StrainComp(ExplicitComponent):
         B = inputs['B']
         d = inputs['d']
         R = RectangularElement()
-        W = R.gaussian_weights()                            #weights defined only for a rectangular element
+        W = R.weights                            #weights defined only for a rectangular element
 
         strain_pre = np.einsum('ijkl, iln, n -> ijk', B, S, d)
         strain = np.einsum('ijk, j -> ik', strain_pre, W)
