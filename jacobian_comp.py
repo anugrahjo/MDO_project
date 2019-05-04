@@ -1,51 +1,27 @@
 from openmdao.api import ExplicitComponent
 from mesh import Mesh
-from element import Element
-
-
 import numpy as np
+
 
 class JacobianComp(ExplicitComponent):
 
     def initialize(self):
-        self.options.declare('ng', types=int)
-        self.options.declare('NDIM', types=int)         # defined in the problem, constant for all elements.
-        self.options.declare('NEL', types=int)
         self.options.declare('pN', types=np.ndarray)
-        self.options.declare('ENT', types=np.ndarray )
-        self.options.declare('Node_Coords', types=np.ndarray)
-        self.options.declare('Elem_Group_Dict', type=np.ndarray)
+        self.options.declare('Elem_Coords', types=np.ndarray)
 
     def setup(self):
-        ng = self.options['ng']
-        NDIM = self.options['NDIM']
-        NEL = self.options['NEL']
+        pN = self.options['pN']
+        (NEL, max_ng, NDIM, max_nn) = np.shape(pN)
 
-        self.add_output('J', shape=(NEL, ng**2, NDIM, NIM))
+        self.add_output('J', shape=(NEL, max_ng, NDIM, NDIM))
         # self.declare_partials('J', '*', method = 'cs')
 
     def compute(self, inputs, outputs):
-        ng = self.options['ng']
-        NDIM = self.options['NDIM']
-        NEL = self.options['NEL']
-
         pN = self.options['pN']
-        ENT = self.options['ENT']
-        Node_Coords = self.options['Node_Coords']
-        J = np.zeros((NEL, ng**2, NDIM, NDIM))          ## ng ** 2 for rectangular elements
+        Elem_Coords = self.options['Elem_Coords']
+        (NEL, max_ng, NDIM, max_nn) = np.shape(pN)
 
-        for i in range(NEL):
-            ent_position = np.where(ENT[i]>-1)
-            ent_position = ent_position[0]
-            nn = ent_position.shape[0]
-            ent = ENT[i][0:nn]
-            pN_ele = pN[i][:][:][0:nn]
-            coords_ele = np.zeros((nn, NDIM))
-            for j in range(nn):
-                position = int(ent[j])
-                coords_ele[j] = Node_Coords[position - 1]
-            np.einsum('ijk, km -> ijm', pN_ele, coords_ele)
-            J[i] = np.einsum('ijk, km -> ijm', pN_ele, coords_ele)
+        J = np.einsum('ijkl, ilm -> ijkm', pN, Elem_Coords)
 
         outputs['J'] = J
 
@@ -57,8 +33,27 @@ if __name__ == '__main__':
     from openmdao.api import Problem
 
     prob = Problem()
+    mesh = Mesh()
 
-    comp = JacobianComp(ng=2, NDIM=2, max_nn=4, NN=10, NEL=3)
+    node_coords = np.array([[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]])
+    ent = np.array([[1, 2, 5, 4], [2, 3, 6, 5]])
+    elem_type = 2  # rectangular
+    ndof = 2
+
+    # node_coords = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
+    # ent = np.array([[1, 2, 4], [3, 2, 4]])
+    # elem_type = 3  # triangular
+    # ndof = 2
+
+    # node_coords = np.array([[0, 0], [1, 0], [0, 1], [-1, 0]])
+    # ent = np.array([[1, 2], [2, 3], [1, 3], [1, 4], [3, 4]])
+    # elem_type = 1  # truss
+    # ndof = 2
+
+    mesh.set_nodes(node_coords, ndof)
+    mesh.add_elem_group(ent, elem_type)
+
+    comp = JacobianComp(pN=mesh.pN, Elem_Coords=mesh.Elem_Coords)
     prob.model = comp
     prob.setup()
     prob.run_model()

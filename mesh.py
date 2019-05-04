@@ -19,9 +19,9 @@ class Mesh():
         self.EFT = np.array([])                     #max. num of dof per element is set as max_edof
         self.S = np.array([])                       #max. num of dof per element is set as max_edof
         self.Node_Coords = np.array([])             #Coords of each node in the mesh
+        self.Elem_Coords = np.array([])
         self.Elem_Group_Dict = np.array([])         #element type of each element in the mesh
         self.pN = np.array([])                      #partials of shape functions for each element group
-        
 
     def set_nodes(self, node_coords, ndof):
         num_new_nodes = node_coords.shape[0]
@@ -92,7 +92,17 @@ class Mesh():
             EFT_temp[:, 0:old_max_edof] = self.EFT * 1
             self.EFT = np.append(EFT_temp, eft_temp, axis = 0)
 
-        
+        elem_coords = np.zeros((nel, nn, self.NDIM))
+        for i in range(nel):
+            for j in range(nn):
+                elem_coords[i][j][:] = self.Node_Coords[ent[i][j]-1][:]
+        if self.Elem_Coords.size == 0:
+            self.Elem_Coords = elem_coords * 1
+        else:
+            Elem_coords = np.full((old_NEL,max_nn), -1)
+            Elem_coords[:, 0:old_max_nn] = self.Elem_Coords * 1
+            self.Elem_Coords = np.append(Elem_coords, elem_coords, axis = 0)
+
 
         # Selection_Matrix considering we only have one type of element: problem?? solved with 30 not tested
         # Also, recalculating S every time new elem. groups are added as NDOF changes : Problem?
@@ -116,22 +126,22 @@ class Mesh():
         # ! problem: how to declare the option of nn and ng for each element, since there might be tens of combinations of (nn, ng) for one problem
         # shall we add more information in Elem_Group_Dict? i.e. (type = 1, 2, 3 (truss, rectangular, triangular), nn)
 
-        pN = np.zeros((self.NEL, 4, self.NDIM, self.max_nn)) #ng_max = 4 for rectangular element with 2 gps in 2 directions
+        pN = np.zeros((self.NEL, 4, self.NDIM, self.max_nn)) #ng_max = 4
 
         for i in range(self.NEL):
             if i != 0:
                 if self.Elem_Group_Dict[i] != self.Elem_Group_Dict[i-1]:
-                    if self.Elem_Group_Dict[i] == 1:
+                    if self.Elem_Group_Dict[i] == 1: # truss element
                         ng = 2
                         Truss = TrussElement(nn, ng)
                         pN[i][0:ng][:][0:nn] = Truss.pN_ele
 
-                    elif self.Elem_Group_Dict[i] == 2: #add more elem groups
+                    elif self.Elem_Group_Dict[i] == 2: # rectangular element
                         ng = 4
                         Rec = RectangularElement(nn, ng)
                         pN[i][0:ng][:][0:nn] = Rec.pN_ele
 
-                    elif self.Elem_Group_Dict[i] == 3: #add more elem groups
+                    elif self.Elem_Group_Dict[i] == 3: # triangular element
                         ng = 3
                         Tri = TriangularElement(nn, ng)
                         pN[i][0:ng][:][0:nn] = Tri.pN_ele
@@ -158,23 +168,22 @@ class Mesh():
         self.pN = pN
 
     
-mesh = Mesh()
+# mesh = Mesh()
 # node_coords = np.array([[0, 0], [1, 0], [1, 1], [0, 1], [2, 0], [2, 1]])
 # ent = np.array([[1, 2, 3, 4], [2, 5, 6, 3]])
 # elem_type = 2  # rectangular
 # ndof = 2
-
-# node_coords = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
-# ent = np.array([[1, 2, 4], [3, 2, 4]])
-# elem_type = 3  # triangular
-# ndof = 2
-
-# node_coords = np.array([[0, 0], [1, 0], [0, 1], [-1, 0]])
-# ent = np.array([[1, 2], [2, 3], [1, 3], [1, 4], [3, 4]])
-# elem_type = 1  # truss
-# ndof = 2
-
+#
+# # node_coords = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
+# # ent = np.array([[1, 2, 4], [3, 2, 4]])
+# # elem_type = 3  # triangular
+# # ndof = 2
+#
+# # node_coords = np.array([[0, 0], [1, 0], [0, 1], [-1, 0]])
+# # ent = np.array([[1, 2], [2, 3], [1, 3], [1, 4], [3, 4]])
+# # elem_type = 1  # truss
+# # ndof = 2
+#
 # mesh.set_nodes(node_coords, ndof)
-# print(mesh.NN)
 # mesh.add_elem_group(ent, elem_type)
-# print(mesh.pN)
+# print(mesh.Elem_Coords)

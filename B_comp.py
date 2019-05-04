@@ -3,77 +3,98 @@ from openmdao.api import ExplicitComponent
 from mesh import Mesh
 
 import numpy as np
-from element import RectangularElement, TrussElement, TriangularElement
+
 
 class BComp(ExplicitComponent):
 
-    def initialize(self):
-        self.options.declare('ng', types=int)
-        self.options.declare('NDIM', types=int)         # defined in the problem, constant for all elements.
-        self.options.declare('max_nn', types=int)
-        self.options.declare('NEL', types=int)
-        self.options.declare('max_edof', types=int)         
+    def initialize(self):     # defined in the problem, constant for all elements.
         self.options.declare('problem_type', types=str)
         self.options.declare('pN', types=np.ndarray)
 
     def setup(self):
-        ng = self.options['ng']
-        NDIM = self.options['NDIM']
-        NEL = self.options['NEL']
-        max_edof = self.options['max_edof']
         problem_type = self.options['problem_type']
+        pN = self.options['pN']
+        (NEL, max_ng, NDIM, max_nn) = np.shape(pN)
 
         if problem_type == 'plane_stress' or 'plane_strain':
             n_D = 3
+            NDOF = 2
         if problem_type == 'truss':
             n_D = 1
-        self.add_input('J', shape=(NEL, ng, NDIM, NDIM))
-        self.add_output('B', shape=(NEL, ng, n_D, max_edof))
+            NDOF = 2
+        max_edof = max_nn * NDOF
+        self.add_input('J', shape=(NEL, max_ng, NDIM, NDIM))
+        self.add_output('B', shape=(NEL, max_ng, n_D, max_edof))
         self.declare_partials('B', '*', method='cs')
 
     def compute(self, inputs, outputs):
-        ng = self.options['ng']
-        NDIM = self.options['NDIM']
-        max_nn = self.options['max_nn']
-        NEL = self.options['NEL']
-        max_edof = self.options['max_edof']
+
         problem_type = self.options['problem_type']
         pN = self.options['pN']
+        (NEL, max_ng, NDIM, max_nn) = pN.shape
+        # same as the settings in 'mesh'
 
         J = inputs['J']
 
         if problem_type == 'plane_stress' or 'plane_strain':
-            B = np.zeros((NEL, ng, 3, max_edof))
-            for i in range(NEL):
-                for j in range(ng**2):
-                    J[i][j] = np.identity(NDIM)
-                    pN_ele_global = np.dot(np.linalg.inv(J[i][j]), pN[i][j])
-                    for k in range(max_nn):
-                        B[i][j][0][2*k] = pN[i][j][0][k]
-                        B[i][j][1][2*k+1] = pN[i][j][1][k]
-                        B[i][j][2][2*k] = pN[i][j][1][k]
-                        B[i][j][2][2*k+1] = pN[i][j][0][k]
+            n_D = 3
+            NDOF = 2
+            (NEL, ng, NDIM, nn) = pN.shape
+            max_edof = max_nn * NDOF
+
+            B = np.zeros((NEL, ng, n_D, max_edof))
+            R = np.zeros((NEL, ng, n_D, max_edof, NDIM, max_nn))
+
+            L = np.zeros((n_D, max_edof, NDIM, max_nn))
+            for i in range(max_nn):
+                L[0][2*i][0][i] = 1
+                L[1][2*i+1][1][i] = 1
+                L[2][2*i][1][i] = 1
+                L[2][2*i+1][0][i] = 1
+
+            R = np.tile(L, (NEL, ng, 1, 1, 1, 1))
+            B = np.einsum('ijklmn, ijmn -> ijkl', R, pN)
+
 
         if problem_type == 'truss':
-            B = np.zeros((NEL, ng, 1, max_edof))
-            for i in range(NEL):
-                for j in range(ng):
-                    B[i][j][0][0:2] = [-1/2, 1/2]
+            n_D = 1
+            NDOF = 2
+            B_ele = np.array([-1/2, 0, 1/2, 0])
+            B = np.tile(B_ele, (NEL, ng, n_D, 1))
 
         outputs['B'] = B
 
 
-    # def compute_partials(self, inputs, partials):
-    #     pass
+    def compute_partials(self, inputs, partials):
+        pass
 
 
 if __name__ == '__main__':
     from openmdao.api import Problem
 
-
     prob = Problem()
+
     mesh = Mesh()
-    comp = BComp(ng=4, NDIM=2, max_nn=4, NEL=1, max_edof=8, problem_type='plane_stress', pN=mesh.pN)
+
+    # node_coords = np.array([[0, 0], [1, 0], [1, 1], [0, 1], [2, 0], [2, 1]])
+    # ent = np.array([[1, 2, 3, 4], [2, 5, 6, 3]])
+    # elem_type = 2  # rectangular
+    # ndof = 2
+
+    # node_coords = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
+    # ent = np.array([[1, 2, 4], [3, 2, 4]])
+    # elem_type = 3  # triangular
+    # ndof = 2
+
+    node_coords = np.array([[0, 0], [1, 0], [0, 1], [-1, 0]])
+    ent = np.array([[1, 2], [2, 3], [1, 3], [1, 4], [3, 4]])
+    elem_type = 1  # truss
+    ndof = 2
+
+    mesh.set_nodes(node_coords, ndof)
+    mesh.add_elem_group(ent, elem_type)
+
+    comp = BComp(problem_type='truss', pN=mesh.pN)
 
     prob.model = comp
     prob.setup()
