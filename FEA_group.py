@@ -16,7 +16,8 @@ from volume_comp import VolumeComp
 class FEAGroup(Group):
     def initialize(self):
         self.options.declare('mesh', types = Mesh)
-        self.options.declare('C', types = np.ndarray)
+        self.options.declare('E', types = float)
+        self.options.declare('v', types = float)
         self.options.declare('problem_type', types = str )
         self.options.declare('ng', types = int)
         self.options.declare('A', types = np.ndarray)
@@ -27,19 +28,22 @@ class FEAGroup(Group):
 
     def setup(self):
         mesh = self.options['mesh']
-        C = self.options['C']
+        E = self.options['E']
+        v = self.options['v']
         problem_type = self.options['problem_type']
         ng = self.options['ng']
         be = self.options['be']
         le = self.options['le']
 
         pN = mesh.pN
+        W = mesh.W
         ENT = mesh.ENT
-        Node_Coords = mesh.Node_Coords
+        Elem_Coords = mesh.Elem_Coords
         NDOF = mesh.NDOF
         NEL = mesh.NEL
         NDIM = mesh.NDIM
         max_nn = mesh.max_nn
+        max_ng = mesh.max_ng
         max_edof = mesh.max_edof
         NN = mesh.NN
         S = mesh.S
@@ -50,21 +54,25 @@ class FEAGroup(Group):
         # comp = ExplicitComponent()
         # comp.add_output('d', shape = (NDOF))
         # self.add_subsystem('d_comp', comp, promotes=['*'])
+        if problem_type == 'plane_stress' or 'plane_strain':
+            n_D = 3
+        if problem_type == 'truss':
+            n_D = 1
 
         comp = IndepVarComp()
         comp.add_output('t', shape = (NEL))
         self.add_subsystem('t_comp', comp, promotes=['*'])
 
-        comp = DComp(C = C, problem_type = problem_type)
+        comp = DComp(E = E, v = v, problem_type = problem_type)
         self.add_subsystem('D_comp', comp, promotes=['*'])
 
-        comp = JacobianComp(ng= ng, NDIM =NDIM, NEL = NEL, pN =pN, ENT = ENT, Node_Coords = Node_Coords)
+        comp = JacobianComp(pN = pN, Elem_Coords = Elem_Coords)
         self.add_subsystem('J_comp', comp, promotes=['*'])
 
-        comp = BComp(ng= ng, NDIM =NDIM, max_nn = max_nn, NEL = NEL, max_edof = max_edof, pN = pN, problem_type = problem_type)
+        comp = BComp(pN = pN, problem_type = problem_type, max_edof = max_edof)
         self.add_subsystem('B_comp', comp, promotes=['*'])
 
-        comp = Kel_localComp(ng = ng, max_edof = max_edof, NEL = NEL)
+        comp = Kel_localComp(W = W, max_edof = max_edof, n_D = n_D)
         self.add_subsystem('Kl_comp', comp, promotes=['*'])
 
         comp = KglobalComp(S = S, max_edof = max_edof, NEL =NEL, NDOF = NDOF)
