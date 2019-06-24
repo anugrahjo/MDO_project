@@ -1,4 +1,6 @@
 import numpy as np
+import cProfile
+
 from mesh import Mesh
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -7,21 +9,18 @@ from openmdao.api import Problem, ScipyOptimizeDriver, ExecComp, view_model
 
 from FEA_group import FEAGroup
 
-nu = 0.3
-m = (1 - nu)/2
-E = 2
-q = E / (1 - nu**2)
+v = 0.3
+E = 2.
 
-C = q * np.array([[1, nu, nu, 0, 0, 0],
-                  [nu, 1, nu, 0, 0, 0],
-                  [nu, nu, 1, 0, 0, 0],
-                  [0, 0, 0, m, 0, 0],
-                  [0, 0, 0, 0, m, 0],
-                  [0, 0, 0, 0, 0, m]])
 
 prob_type = 'plane_strain'
 
-ng = 2
+ng = 4
+
+
+#meshing using parameters: element nodes table
+# NELx by NELy mesh
+# NN nodes, NEL elements
 
 # meshing using parameters: nodal coordinates
 xstart = 0
@@ -30,8 +29,8 @@ xend = 1
 yend = 1
 l = abs(xend - xstart)
 b = abs(yend - ystart)
-NELx = 3
-NELy = 3
+NELx = 10
+NELy = 10
 le = l/NELx
 be = b/NELy
 NEL = NELx * NELy
@@ -53,18 +52,20 @@ node_coords1 = np.zeros((NN, 2))
 node_coords1[:, 0] = x_coords
 node_coords1[:, 1] = y_coords
 
-#meshing using parameters: element nodes table
+
 node1 = np.arange(1, NNx * (NNy-1) + 1)
 node2 = node1 + 1
 node4 = np.arange(NNx+1, NNx * NNy + 1)
 node3 = node4 + 1
-ent1 = np.zeros((NEL + NELy, 4))
+ent1 = np.zeros((NEL + NELy, 4), dtype=int)
+
 ent1[:, 0] = node1
 ent1[:, 1] = node2
 ent1[:, 2] = node3
 ent1[:, 3] = node4
 
 ent1 = np.delete(ent1, np.s_[NNx-1 :: NNx], 0)       # np.s_[] :slicing or can use list like: list(range(NNx-1, ent1.shape[0], NNx))
+
 
 #costraints with parameters
 ndof1 = 2
@@ -79,7 +80,6 @@ for i in range(NELy):
     t += 1
     A[t, NNx * ndof1 * (i + 1) + 1] = 1
     t += 1
-
 
 #force distribution with parameters
 f_dbn = 10               #(kN/m = N/mm)
@@ -100,16 +100,22 @@ for i in range(NNy):
 # f[4] = f[16] = 2.5
 # f[10] = 5
 
+# ----------------------------------------------------------------------------------------
+# 1D cantilever beam problem
+# Objective: minimizing the compliance with respect to thickness distribution
+
+
+
+
 mesh = Mesh()
 mesh.set_nodes(node_coords1, ndof1)
 mesh.add_elem_group(ent1, 2)                            # 2 is element type for rectangular elements
-mesh.add_elem_group_partials()
 
 
 # prob = Problem(model = FEAGroup(C = C, mesh = mesh))
 
 prob = Problem()
-prob.model = FEAGroup(C=C, mesh=mesh, problem_type = prob_type, ng = ng, A =A, f = f, constraints = constraints, be = be, le = le)
+prob.model = FEAGroup(mesh=mesh, E=E, v=v, problem_type = prob_type, ng = ng, A =A, f = f, constraints = constraints, be = be, le = le)
 prob.model.add_design_var('t')
 prob.model.add_constraint('volume', upper = l*b*3)
 prob.model.add_constraint('t', lower = 0)

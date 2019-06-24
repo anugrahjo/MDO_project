@@ -1,6 +1,9 @@
+
+# not used
+
+
 import numpy as np
 from mesh import Mesh
-from truss_element import TrussElement
 
 from openmdao.api import Problem, ScipyOptimizeDriver, ExecComp
 
@@ -39,7 +42,7 @@ y = np.linspace(ystart, yend, NNy)
 x_coords = np.tile(x, NNy)
 y_coords = np.repeat(y, NNx)
 
-node_coords1 = np.zeros((NN, 2)) 
+node_coords1 = np.zeros((NN, 2))
 node_coords1[:, 0] = x_coords
 node_coords1[:, 1] = y_coords
 

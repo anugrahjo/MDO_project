@@ -16,6 +16,7 @@ class DComp(ExplicitComponent):
         if problem_type == 'truss':
             n_D = 1
         self.add_output('D', shape=(n_D, n_D))
+        self.declare_partials('D', '*', method='cs')
         
     def compute(self, inputs, outputs):
         E = self.options['E']
@@ -53,19 +54,19 @@ class DComp(ExplicitComponent):
         outputs['D'] = D
 
 
-if __name__ == '__main__':
-    from openmdao.api import Problem
-
-    prob = Problem()
-
-    comp = DComp(E=2., v=.3, problem_type='plane_stress')
-
-    prob.model = comp
-    prob.setup()
-    prob.run_model()
-    prob.model.list_outputs()
-    D = prob['D']
-    print(prob['D'])
-    prob.check_partials(compact_print=True)
+# if __name__ == '__main__':
+#     from openmdao.api import Problem
+#
+#     prob = Problem()
+#
+#     comp = DComp(E=2., v=.3, problem_type='plane_stress')
+#
+#     prob.model = comp
+#     prob.setup()
+#     prob.run_model()
+#     prob.model.list_outputs()
+#     D = prob['D']
+#     print(prob['D'])
+#     prob.check_partials(compact_print=True)
 
 

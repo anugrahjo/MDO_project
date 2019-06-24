@@ -42,7 +42,7 @@ class Mesh():
         
 
     # DOF_index and node_index starting from 1
-    def add_elem_group(self, ent ,elem_type):
+    def add_elem_group(self, ent, elem_type):
 
         # -----------------------------------------------------------------------------------------------
         # Updates for max_nn, max_edof, NEL
@@ -188,8 +188,8 @@ class Mesh():
 # mesh.set_nodes(node_coords2, ndof2)
 # mesh.add_elem_group(ent2, elem_type2)
 #
-
-
+# print(node_coords1.shape)
+# print(ent1.shape)
 ### test for truss elements
 # node_coords = np.array([[0, 0], [1, 0], [0, 1], [-1, 0]])
 # ent = np.array([[1, 2], [2, 3], [1, 3], [1, 4], [3, 4]])

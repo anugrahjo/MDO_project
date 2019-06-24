@@ -329,7 +329,80 @@ class TriangularElement(Element):
         self.pN_ele = pN_value
 
 
+class BeamElement(Element):
 
+    def setup(self, nn, ng):
+        self.ndof = 2
+        self.edof = nn * self.ndof
+        self.nn = nn
+        self.ng = ng
+
+        list_nn = [1, 2, 3]
+        list_ng = [2, 3]
+        if ng in list_ng:
+            if nn in list_nn:
+                self.gauss_points()
+                self.shape_function_value()
+                self.shape_function_partial()
+            else:
+                print('invalid number of nodes for the truss element')
+        else:
+            print('invalid number of Gauss points for the truss element')
+
+    def gauss_points(self):
+        ng = self.ng
+        xi = np.zeros(ng)
+        weight = np.zeros(ng)
+
+        if ng == 1:
+            xi = np.array([0])
+            weight = np.array([2])
+
+        if ng == 2:
+            xi[0] = -.5773502691896257
+            xi[1] = -1 * xi[0]
+            weight[0] = 1.0
+            weight[1] = 1.0
+
+        if ng == 3:
+            xi[0] = -0.7745966692414834
+            xi[1] = 0.0
+            xi[2] = -1 * xi[0]
+            weight[0] = 0.5555555555555556
+            weight[1] = 0.8888888888888888
+            weight[2] = 0.5555555555555556
+
+        self.xi = xi
+        self.weight = weight
+
+    def shape_function_value(self):
+        nn = self.nn
+        ng = self.ng
+        xi = self.xi
+
+        if nn == 2:
+            N_value = np.transpose([1/2.*(1-xi), 1/2.*(1+xi)])
+            N_value = np.reshape(N_value, (ng, 1, nn))
+
+        if nn == 3:
+            N_value = np.transpose([1/2.*xi*(xi-1), (1-xi)*(xi+1), 1/2.*xi*(xi+1)])
+            N_value = np.reshape(N_value, (ng, 1, nn))
+
+        self.N_ele = N_value
+
+    def shape_function_partial(self):
+        nn = self.nn
+        ng = self.ng
+        xi = self.xi
+
+        if nn == 2:
+            pN_value = np.tile([-1/2, 1/2], (ng, 1, 1))
+
+        if nn == 3:
+            pN_value = np.transpose([1/2.*(2*xi-1), -2.*xi, 1/2.*(2*xi+1)])
+            pN_value = np.reshape(pN_value, (ng, 1, nn))
+
+        self.pN_ele = pN_value
 # truss = TrussElement(nn=2, ng=2)
 # print(truss.N_ele)
 # print(truss.pN_ele)

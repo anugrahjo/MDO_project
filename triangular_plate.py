@@ -3,6 +3,8 @@ from element import Element
 from shape_functions import Shape_Function, Diff_Shape_Function
 from gauss_points import Gauss_Points
 
+# not used
+
 import numpy as np
 
 
