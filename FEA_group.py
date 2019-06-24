@@ -1,16 +1,18 @@
 import numpy as np
 
 from mesh import Mesh
-from openmdao.api import Group, ExplicitComponent, IndepVarComp
+from openmdao.api import Group, ExplicitComponent, ImplicitComponent, IndepVarComp, LinearSystemComp
 from mesh import Mesh
 from jacobian_comp import JacobianComp
 from B_comp import BComp
 from D_comp import DComp
 from Kel_local_comp import Kel_localComp
 from Kglobal_comp import KglobalComp
-from solve_comp import SolveComp
+from KKT_comp import KKTComp
+from displacements_comp import DisplacementsComp
 from compliance_comp import ComplianceComp
 from volume_comp import VolumeComp
+from sparse_algebra import SparseTensor, sparse, compute_indices
 
 
 class FEAGroup(Group):
@@ -46,7 +48,7 @@ class FEAGroup(Group):
         max_ng = mesh.max_ng
         max_edof = mesh.max_edof
         NN = mesh.NN
-        S = mesh.S
+        S = mesh.S.ind
         A = self.options['A']
         f = self.options['f']
         constraints = self.options['constraints']
@@ -75,11 +77,16 @@ class FEAGroup(Group):
         comp = Kel_localComp(W = W, max_edof = max_edof, n_D = n_D)
         self.add_subsystem('Kl_comp', comp, promotes=['*'])
 
-        comp = KglobalComp(S = S, max_edof = max_edof, NEL =NEL, NDOF = NDOF)
+        comp = KglobalComp(S = S, max_edof = max_edof, NEL = NEL, NDOF = NDOF)
         self.add_subsystem('Kg_comp', comp, promotes=['*'])
 
-        comp = SolveComp(NDOF = NDOF, A = A , f = f , constraints = constraints)
-        self.add_subsystem('Solve_comp', comp, promotes=['*'])
+        comp = KKTComp(NDOF = NDOF, A = A , f = f, constraints = constraints)
+        self.add_subsystem('KKT_comp', comp, promotes=['*'])
+
+        self.add_subsystem('Solve_comp', LinearSystemComp(size = (NDOF+len(constraints))))
+
+        comp = DisplacementsComp(NDOF = NDOF, constraints = constraints)
+        self.add_subsystem('Displacements_comp', comp, promotes=['*'])
         
         comp = ComplianceComp(NDOF = NDOF, f = f)
         self.add_subsystem('Compliance_comp', comp, promotes=['*'])
@@ -88,9 +95,9 @@ class FEAGroup(Group):
         self.add_subsystem('Volume_comp', comp, promotes=['*'])
 
 
-if __name__ == '__main__':
-    from openmdao.api import Problem, ScipyOptimizeDriver
-
-    prob = Problem()
-    prob.model = FEAGroup()
-
+# if __name__ == '__main__':
+#     from openmdao.api import Problem, ScipyOptimizeDriver
+#
+#     prob = Problem()
+#     prob.model = FEAGroup()
+#

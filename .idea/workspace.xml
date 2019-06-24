@@ -2,21 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bcf2b478-127e-4b91-961e-eb8460d3b341" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/B_comp.py" beforeDir="false" afterPath="$PROJECT_DIR$/B_comp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/D_comp.py" beforeDir="false" afterPath="$PROJECT_DIR$/D_comp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FEA_group.py" beforeDir="false" afterPath="$PROJECT_DIR$/FEA_group.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KKT_comp.py" beforeDir="false" afterPath="$PROJECT_DIR$/KKT_comp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Kel_local_comp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Kel_local_comp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/T_comp.py" beforeDir="false" afterPath="$PROJECT_DIR$/T_comp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/element.py" beforeDir="false" afterPath="$PROJECT_DIR$/element.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jacobian_comp.py" beforeDir="false" afterPath="$PROJECT_DIR$/jacobian_comp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/material_comp.py" beforeDir="false" afterPath="$PROJECT_DIR$/material_comp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kglobal_comp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Kglobal_comp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compliance_comp.py" beforeDir="false" afterPath="$PROJECT_DIR$/compliance_comp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/displacements_comp.py" beforeDir="false" afterPath="$PROJECT_DIR$/displacements_comp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mesh.py" beforeDir="false" afterPath="$PROJECT_DIR$/mesh.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/n2.html" beforeDir="false" afterPath="$PROJECT_DIR$/n2.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/optimizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rectangular_plate.py" beforeDir="false" afterPath="$PROJECT_DIR$/rectangular_plate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shape_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/shape_functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/triangular_plate.py" beforeDir="false" afterPath="$PROJECT_DIR$/triangular_plate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/truss_element.py" beforeDir="false" afterPath="$PROJECT_DIR$/truss_element.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -29,8 +24,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mesh.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1785">
-              <caret line="121" lean-forward="true" selection-start-line="121" selection-end-line="121" />
+            <state relative-caret-position="-2151">
+              <caret line="14" column="15" lean-forward="true" selection-start-line="14" selection-start-column="15" selection-end-line="14" selection-end-column="15" />
               <folding>
                 <element signature="e#1#19#0" expanded="true" />
               </folding>
@@ -41,10 +36,22 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/optimizer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="42">
-              <caret line="58" column="17" lean-forward="true" selection-start-line="58" selection-start-column="17" selection-end-line="58" selection-end-column="17" />
+            <state relative-caret-position="416">
+              <caret line="146" column="22" lean-forward="true" selection-start-line="146" selection-start-column="22" selection-end-line="146" selection-end-column="22" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/displacements_comp.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="390">
+              <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
+              <folding>
+                <element signature="e#1#19#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -53,8 +60,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/FEA_group.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1035">
-              <caret line="81" column="10" lean-forward="true" selection-start-line="81" selection-start-column="10" selection-end-line="81" selection-end-column="10" />
+            <state relative-caret-position="543">
+              <caret line="97" selection-start-line="97" selection-end-line="103" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -63,12 +70,57 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/solve_comp.py">
+        <entry file="file://$PROJECT_DIR$/KKT_comp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="18" column="8" lean-forward="true" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
+            <state relative-caret-position="450">
+              <caret line="30" column="28" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Kglobal_comp.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="161">
+              <caret line="74" column="26" selection-start-line="74" selection-start-column="26" selection-end-line="74" selection-end-column="26" />
+              <folding>
+                <element signature="e#0#42#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/compliance_comp.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/volume_comp.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="315">
+              <caret line="22" column="39" lean-forward="true" selection-start-line="22" selection-start-column="39" selection-end-line="22" selection-end-column="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Kel_local_comp.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="675">
+              <caret line="45" selection-start-line="45" selection-end-line="45" />
+              <folding>
+                <element signature="e#0#42#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -92,28 +144,30 @@
         <option value="$PROJECT_DIR$/gauss_points.py" />
         <option value="$PROJECT_DIR$/plate_element.py" />
         <option value="$PROJECT_DIR$/strain_comp.py" />
-        <option value="$PROJECT_DIR$/FEA_group.py" />
         <option value="$PROJECT_DIR$/element.py" />
-        <option value="$PROJECT_DIR$/mesh.py" />
         <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/B_comp.py" />
         <option value="$PROJECT_DIR$/D_comp.py" />
         <option value="$PROJECT_DIR$/jacobian_comp.py" />
-        <option value="$PROJECT_DIR$/Kel_local_comp.py" />
         <option value="$PROJECT_DIR$/material_comp.py" />
         <option value="$PROJECT_DIR$/rectangular_plate.py" />
         <option value="$PROJECT_DIR$/T_comp.py" />
         <option value="$PROJECT_DIR$/triangular_plate.py" />
         <option value="$PROJECT_DIR$/truss_element.py" />
         <option value="$PROJECT_DIR$/shape_functions.py" />
+        <option value="$PROJECT_DIR$/mesh.py" />
+        <option value="$PROJECT_DIR$/compliance_comp.py" />
+        <option value="$PROJECT_DIR$/Kel_local_comp.py" />
+        <option value="$PROJECT_DIR$/Kglobal_comp.py" />
+        <option value="$PROJECT_DIR$/FEA_group.py" />
         <option value="$PROJECT_DIR$/optimizer.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="229" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="238" />
     <option name="y" value="23" />
-    <option name="width" value="1441" />
+    <option name="width" value="1139" />
     <option name="height" value="797" />
   </component>
   <component name="ProjectView">
@@ -121,11 +175,35 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="MDO_project-master" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MDO_project-master" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MDO_project-master" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
+            <path>
+              <item name="MDO_project-master" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Scratches and Consoles" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
+            </path>
+            <path>
+              <item name="MDO_project-master" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Scratches and Consoles" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
+              <item name="Scratches" type="d62648e6:ScratchProjectViewPane$MyRootNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="Course" />
-      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
@@ -140,8 +218,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.optimizer">
-    <configuration name="B_comp" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.Kglobal_comp">
+    <configuration name="FEA_group" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="MDO_project-master" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -153,7 +231,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/B_comp.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FEA_group.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -183,7 +261,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="jacobian_comp" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="Kglobal_comp" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="MDO_project-master" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -195,7 +273,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/jacobian_comp.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Kglobal_comp.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -248,11 +326,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Kglobal_comp" />
+        <item itemvalue="Python.FEA_group" />
         <item itemvalue="Python.optimizer" />
         <item itemvalue="Python.mesh" />
         <item itemvalue="Python.Kel_local_comp" />
-        <item itemvalue="Python.B_comp" />
-        <item itemvalue="Python.jacobian_comp" />
       </list>
     </recent_temporary>
   </component>
@@ -260,9 +338,10 @@
     <configuration />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="797" extended-state="6" />
+    <frame x="238" y="23" width="1139" height="797" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17195208" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21824686" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" order="0" weight="0.3287858" />
       <window_info anchor="bottom" id="Terminal" order="1" weight="0.3287858" />
@@ -270,7 +349,7 @@
       <window_info anchor="bottom" id="Message" order="3" />
       <window_info anchor="bottom" id="Educational.CheckDetails" order="4" />
       <window_info anchor="bottom" id="Find" order="5" />
-      <window_info anchor="bottom" id="Run" order="6" weight="0.5388813" />
+      <window_info anchor="bottom" id="Run" order="6" weight="0.1255116" />
       <window_info anchor="bottom" id="Debug" order="7" weight="0.39972714" />
       <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.4" />
@@ -282,42 +361,15 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../MAE/2019 Winter/MAE207/Ru_Project3/test_problem_1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-689">
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../MAE/2019 Winter/MAE207/Ru_Project3/test_problem_1.py" />
     <entry file="file://$PROJECT_DIR$/gauss_points.py" />
-    <entry file="file://$PROJECT_DIR$/../MAE/2019 Winter/MAE207/Ru_Project3/problem_1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../MAE/2019 Winter/MAE207/Ru_Project3/problem_1.py" />
     <entry file="file://$PROJECT_DIR$/plate_element.py" />
     <entry file="file://$PROJECT_DIR$/../FEA-Solver-for-LSDO-Review-master/optimizer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Kglobal_comp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="236">
-          <caret line="21" column="39" selection-start-line="21" selection-start-column="39" selection-end-line="21" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#42#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -356,29 +408,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/volume_comp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="22" column="39" lean-forward="true" selection-start-line="22" selection-start-column="39" selection-end-line="22" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/B_comp.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="74" column="1" lean-forward="true" selection-start-line="74" selection-start-column="1" selection-end-line="74" selection-end-column="1" />
           <folding>
             <element signature="e#1#43#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/compliance_comp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="57" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -397,16 +432,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4950">
           <caret line="330" lean-forward="true" selection-start-line="330" selection-end-line="330" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Kel_local_comp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="48" column="1" lean-forward="true" selection-start-line="48" selection-start-column="1" selection-end-line="48" selection-end-column="1" />
-          <folding>
-            <element signature="e#0#42#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -451,36 +476,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/material_comp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mesh.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1785">
-          <caret line="121" lean-forward="true" selection-start-line="121" selection-end-line="121" />
-          <folding>
-            <element signature="e#1#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/FEA_group.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1035">
-          <caret line="81" column="10" lean-forward="true" selection-start-line="81" selection-start-column="10" selection-end-line="81" selection-end-column="10" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/solve_comp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
+        <state relative-caret-position="270">
           <caret line="18" column="8" lean-forward="true" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -488,10 +486,94 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/mesh.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2151">
+          <caret line="14" column="15" lean-forward="true" selection-start-line="14" selection-start-column="15" selection-end-line="14" selection-end-column="15" />
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Kglobal_comp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="74" column="26" selection-start-line="74" selection-start-column="26" selection-end-line="74" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#42#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/compliance_comp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/volume_comp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="22" column="39" lean-forward="true" selection-start-line="22" selection-start-column="39" selection-end-line="22" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Kel_local_comp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="675">
+          <caret line="45" selection-start-line="45" selection-end-line="45" />
+          <folding>
+            <element signature="e#0#42#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KKT_comp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="30" column="28" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/material_comp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/FEA_group.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="543">
+          <caret line="97" selection-start-line="97" selection-end-line="103" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/displacements_comp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/optimizer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="58" column="17" lean-forward="true" selection-start-line="58" selection-start-column="17" selection-end-line="58" selection-end-column="17" />
+        <state relative-caret-position="416">
+          <caret line="146" column="22" lean-forward="true" selection-start-line="146" selection-start-column="22" selection-end-line="146" selection-end-column="22" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

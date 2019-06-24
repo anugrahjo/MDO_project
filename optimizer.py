@@ -1,11 +1,13 @@
 import numpy as np
-import cProfile
-
 from mesh import Mesh
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 from openmdao.api import Problem, ScipyOptimizeDriver, ExecComp, view_model
+
+from sparse_algebra import SparseTensor
+from sparse_algebra import compute_indices
+from sparse_algebra import sparse, dense
 
 from FEA_group import FEAGroup
 
@@ -29,8 +31,8 @@ xend = 1
 yend = 1
 l = abs(xend - xstart)
 b = abs(yend - ystart)
-NELx = 10
-NELy = 10
+NELx = 8
+NELy = 8
 le = l/NELx
 be = b/NELy
 NEL = NELx * NELy
@@ -100,11 +102,6 @@ for i in range(NNy):
 # f[4] = f[16] = 2.5
 # f[10] = 5
 
-# ----------------------------------------------------------------------------------------
-# 1D cantilever beam problem
-# Objective: minimizing the compliance with respect to thickness distribution
-
-
 
 
 mesh = Mesh()
@@ -116,9 +113,12 @@ mesh.add_elem_group(ent1, 2)                            # 2 is element type for 
 
 prob = Problem()
 prob.model = FEAGroup(mesh=mesh, E=E, v=v, problem_type = prob_type, ng = ng, A =A, f = f, constraints = constraints, be = be, le = le)
+prob.model.connect('K_temp', 'Solve_comp.A')
+prob.model.connect('f_temp', 'Solve_comp.b')
+prob.model.connect('Solve_comp.x','d')
 prob.model.add_design_var('t')
 prob.model.add_constraint('volume', upper = l*b*3)
-prob.model.add_constraint('t', lower = 0)
+prob.model.add_constraint('t', lower = 1)
 
 
 
@@ -134,7 +134,7 @@ prob.driver.options['optimizer'] = 'SLSQP'
 prob.setup()
 prob.run_driver()
 print(prob['compliance'])
-print(prob['d'])
+print(prob['displacements'])
 print(prob['t'])
 print(prob['volume'])
 

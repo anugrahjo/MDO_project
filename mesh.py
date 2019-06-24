@@ -2,6 +2,7 @@
 import numpy as np
 
 from element import TrussElement, RectangularElement, TriangularElement
+from sparse_algebra import SparseTensor
 
 class Mesh():
 
@@ -156,12 +157,26 @@ class Mesh():
         # ! Selection_Matrix considering we only have one type of element: problem?? solved with 30 not tested
         # ! Also, recalculating S every time new elem. groups are added as NDOF changes : Problem?
 
-        S = np.zeros((NEL, max_edof, NDOF))
-        for i in range(NEL):
-            for j in range(max_edof):
-                if self.EFT[i][j] != -1:
-                    dof_index = self.EFT[i][j] - 1
-                    S[i][j][dof_index] = 1
+        # S = np.zeros((NEL, max_edof, NDOF))
+        # for i in range(NEL):
+        #     for j in range(max_edof):
+        #         if self.EFT[i][j] != -1:
+        #             dof_index = self.EFT[i][j] - 1
+        #             S[i][j][dof_index] = 1
+        # self.S = S
+
+        S = SparseTensor()
+        S_shape = np.array([NEL, max_edof, NDOF])
+        k = np.where(self.EFT >= 1)                 # k stores the indices where args are not -1(since DOF numbering starts from 1)
+        dof_index = (self.EFT[k] - 1).astype(int)
+        S_val = np.ones(dof_index.size)
+        k0 = k[0].reshape((dof_index.size, 1))
+        k1 = k[1].reshape((dof_index.size, 1))
+        di = dof_index.reshape((dof_index.size, 1))
+        S_ind = np.append( k0, k1, axis = 1)
+        S_ind = np.append( S_ind, di, axis = 1)
+        S.initialize(S_shape, S_val, S_ind)
+
         self.S = S
 
         # if self.S == np.array([]):
