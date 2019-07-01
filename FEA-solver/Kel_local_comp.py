@@ -2,10 +2,7 @@ from openmdao.api import ExplicitComponent
 import numpy as np
 from mesh import Mesh
 
-from sparse_algebra import dense
-from sparse_algebra import sparse
-from sparse_algebra import SparseTensor
-from sparse_algebra import sparse_einsum
+from sparse_algebra import dense, sparse, SparseTensor, sparse_einsum
 
 
 class Kel_localComp(ExplicitComponent):
@@ -23,6 +20,7 @@ class Kel_localComp(ExplicitComponent):
 
         self.add_input('B', shape=(NEL, max_ng, n_D, max_edof))
         self.add_input('D', shape=(n_D, n_D))
+        self.add_input('det_J', shape=(NEL, max_ng))
 
         self.add_output('Kel_local', shape=(NEL, max_edof, max_edof))
         
@@ -31,19 +29,19 @@ class Kel_localComp(ExplicitComponent):
 
         B = inputs['B']
         D = inputs['D']
-
+        det_J = inputs['det_J']
         B_sp = sparse(B)
         D_sp = sparse(D)
         W_sp = sparse(W)
+        det_J_sp = sparse(det_J)
 
         Kel_local_pre1_sp = sparse_einsum([[0,1,2,3],[0,1,4,5],[2,4],[0,1,3,5]], B_sp, B_sp, D_sp)
 
-        Kel_local_sp = sparse_einsum([[0,1,3,5],[0,1],[0,3,5]],Kel_local_pre1_sp, W_sp)
+        Kel_local_sp = sparse_einsum([[0,1,3,5],[0,1],[0,1],[0,3,5]],Kel_local_pre1_sp, det_J_sp, W_sp)
 
         Kel_local = dense(Kel_local_sp)
 
         outputs['Kel_local'] = Kel_local
-
 
         # Kel_local_pre1 = np.einsum('ijkl, kn, ijno -> ijlo', B, D, B)
         # Kel_local_pre2 = np.einsum('ijlo, ij ->ilo', Kel_local_pre1, W)
@@ -57,24 +55,24 @@ class Kel_localComp(ExplicitComponent):
         # partials['Kel_local', 'D'] = inputs['Kel_local'] * 2
         # pass
 
+##
+#if __name__ == '__main__':
+#    from openmdao.api import Problem
 #
-# if __name__ == '__main__':
-#     from openmdao.api import Problem
+#    prob = Problem()
+#    mesh = Mesh()
 #
-#     prob = Problem()
-#     mesh = Mesh()
+#    node_coords1 = np.array([[0, 0], [1, 0], [1, 1], [0, 1], [2, 0], [2, 1]])
+#    ent1 = np.array([[1, 2, 3, 4], [2, 5, 6, 3]])
+#    elem_type1 = 2  # rectangular
+#    ndof1 = 2
+#    n_D1 = 3
 #
-#     node_coords1 = np.array([[0, 0], [1, 0], [1, 1], [0, 1], [2, 0], [2, 1]])
-#     ent1 = np.array([[1, 2, 3, 4], [2, 5, 6, 3]])
-#     elem_type1 = 2  # rectangular
-#     ndof1 = 2
-#     n_D1 = 3
-#
-#     node_coords2 = np.array([[3, 0], [3, 1]])
-#     ent2 = np.array([[3, 7, 6], [8, 7, 6]])
-#     elem_type2 = 3  # triangular
-#     ndof2 = 2
-#     n_D2 = 3
+#    node_coords2 = np.array([[3, 0], [3, 1]])
+#    ent2 = np.array([[3, 7, 6], [8, 7, 6]])
+#    elem_type2 = 3  # triangular
+#    ndof2 = 2
+#    n_D2 = 3
 # #
 # #     # node_coords = np.array([[0, 0], [1, 0], [0, 1], [-1, 0]])
 # #     # ent = np.array([[1, 2], [2, 3], [1, 3], [1, 4], [3, 4]])
@@ -82,17 +80,17 @@ class Kel_localComp(ExplicitComponent):
 # #     # ndof = 2
 # #     # n_D = 1
 # #
-#     mesh.set_nodes(node_coords1, ndof1)
-#     mesh.set_nodes(node_coords2, ndof2)
-#     mesh.add_elem_group(ent1, elem_type1)
-#     mesh.add_elem_group(ent2, elem_type2)
+#    mesh.set_nodes(node_coords1, ndof1)
+#    mesh.set_nodes(node_coords2, ndof2)
+#    mesh.add_elem_group(ent1, elem_type1)
+#    mesh.add_elem_group(ent2, elem_type2)
 #
-#     comp = Kel_localComp(W = mesh.W, max_edof = mesh.max_edof, n_D = n_D1)
+#    comp = Kel_localComp(W = mesh.W, max_edof = mesh.max_edof, n_D = n_D1)
 #
-#     prob.model = comp
-#     prob.setup()
-#     prob.run_model()
-#     prob.model.list_outputs()
-#     Kel_local = prob['Kel_local']
-#     print(Kel_local)
-#     prob.check_partials(compact_print=True)
+#    prob.model = comp
+#    prob.setup()
+#    prob.run_model()
+#    prob.model.list_outputs()
+#    Kel_local = prob['Kel_local']
+#    print(Kel_local)
+#    prob.check_partials(compact_print=True)

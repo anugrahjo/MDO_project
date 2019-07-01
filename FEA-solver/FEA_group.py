@@ -36,6 +36,9 @@ class FEAGroup(Group):
         ng = self.options['ng']
         be = self.options['be']
         le = self.options['le']
+        A = self.options['A']
+        f = self.options['f']
+        constraints = self.options['constraints']
 
         pN = mesh.pN
         W = mesh.W
@@ -49,9 +52,6 @@ class FEAGroup(Group):
         max_edof = mesh.max_edof
         NN = mesh.NN
         S = mesh.S.ind
-        A = self.options['A']
-        f = self.options['f']
-        constraints = self.options['constraints']
 
         # comp = ExplicitComponent()
         # comp.add_output('d', shape = (NDOF))

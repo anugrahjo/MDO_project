@@ -4,12 +4,16 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 from openmdao.api import Problem, ScipyOptimizeDriver, ExecComp, view_model
+from openmdao.devtools import iprofile
 
-from sparse_algebra import SparseTensor
-from sparse_algebra import compute_indices
-from sparse_algebra import sparse, dense
+from sparse_algebra import SparseTensor, compute_indices, sparse, dense
 
 from FEA_group import FEAGroup
+
+
+#--------------------------------------------------------------------
+# plane strain example: minimize compliance wrt thickness
+#--------------------------------------------------------------------
 
 v = 0.3
 E = 2.
@@ -31,8 +35,8 @@ xend = 1
 yend = 1
 l = abs(xend - xstart)
 b = abs(yend - ystart)
-NELx = 8
-NELy = 8
+NELx = 4
+NELy = 4
 le = l/NELx
 be = b/NELy
 NEL = NELx * NELy
@@ -50,7 +54,7 @@ y_coords = np.repeat(y, NNx)
 xm_coords = np.tile(xm, NELy)
 ym_coords = np.repeat(ym, NELx)
 
-node_coords1 = np.zeros((NN, 2)) 
+node_coords1 = np.zeros((NN, 2))
 node_coords1[:, 0] = x_coords
 node_coords1[:, 1] = y_coords
 
@@ -94,7 +98,6 @@ for i in range(NNy):
     else:
         f[(NNx * ndof1)*(i+1) - 2] = f_ele
 
-
 # constraints = np.zeros(10)
 # A = np.zeros((10, 18))
 # A[0,0] = A[1][1] = A[2][2] = A[3][3] = A[4][4] = A[5][5] = A[6][6] = A[7][7] = A[8][12] = A[9][13] = 1
@@ -102,14 +105,82 @@ for i in range(NNy):
 # f[4] = f[16] = 2.5
 # f[10] = 5
 
-
-
 mesh = Mesh()
 mesh.set_nodes(node_coords1, ndof1)
 mesh.add_elem_group(ent1, 2)                            # 2 is element type for rectangular elements
 
+#--------------------------------------------------------------------
 
-# prob = Problem(model = FEAGroup(C = C, mesh = mesh))
+
+
+#--------------------------------------------------------------------
+# 1D cantilever beam example: minimize compliance wrt thickness
+#--------------------------------------------------------------------
+#v = 0.1
+#E = 1.
+#
+#
+#prob_type = 'beam'
+#
+#ng = 2
+#
+#
+##meshing using parameters: element nodes table
+## NELx by NELy mesh
+## NN nodes, NEL elements
+#
+## meshing using parameters: nodal coordinates
+#xstart = 0
+#xend = 1
+#l = abs(xend - xstart)
+#b = 0.1
+#NEL = 50
+#be = b
+#le = l/NEL
+#NN = NEL + 1
+#
+#x_coords = np.linspace(xstart, xend, NN)
+#
+#node_coords1 = np.zeros((NN, 2))
+#node_coords1[:, 0] = x_coords
+#
+#
+#node1 = np.arange(1, NN)
+#node2 = node1 + 1
+#ent2 = np.zeros((NEL, 2), dtype=int)
+#
+#ent2[:, 0] = node1
+#ent2[:, 1] = node2
+#
+#
+##costraints with parameters
+#ndof2 = 2
+#constraints = np.zeros((2 * ndof2))          # fixed on the first node
+#A = np.zeros(((2 * ndof2, NN * ndof2))
+#
+#
+##force distribution with parameters
+#f_dbn = 10               #(kN/m = N/mm)
+#f_tot = f_dbn * (yend - ystart)
+#f_ele = f_tot/(NELy)
+#f = np.zeros(NN * ndof1)
+#for i in range(NNy):
+#    if i == 0 or i == (NNy-1):
+#        f[(NNx * ndof1)*(i+1) - 2] = f_ele/2
+#    else:
+#        f[(NNx * ndof1)*(i+1) - 2] = f_ele
+#
+#
+#
+#mesh = Mesh()
+#mesh.set_nodes(node_coords2, ndof2)
+#mesh.add_elem_group(ent2, 4)                            # 4 is element type for beam elements
+
+#--------------------------------------------------------------------
+             
+             
+iprofile.setup()
+iprofile.start()
 
 prob = Problem()
 prob.model = FEAGroup(mesh=mesh, E=E, v=v, problem_type = prob_type, ng = ng, A =A, f = f, constraints = constraints, be = be, le = le)
@@ -134,18 +205,12 @@ prob.driver.options['optimizer'] = 'SLSQP'
 prob.setup()
 prob.run_driver()
 print(prob['compliance'])
-print(prob['displacements'])
-print(prob['t'])
-print(prob['volume'])
+
+
+iprofile.stop()
 
 view_model(prob)
 
-##Contour plot
-# thickness_dbn = np.reshape(prob['t'], (NELx,NELy))
-# x = np.arange(NELx)
-# y = np.arange(NELy)
-# X, Y = np.meshgrid(x, y)
-# plt.contour(X, Y, thickness_dbn)
 
 #3D Plot
 fig = plt.figure()
@@ -153,6 +218,3 @@ ax = fig.add_subplot(111, projection='3d')
 ax.scatter(xm_coords, ym_coords, prob['t'])
 plt.show()
 
-# prob.run_model()
-# prob.model.list_outputs()
-# prob['']

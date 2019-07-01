@@ -337,17 +337,17 @@ class BeamElement(Element):
         self.nn = nn
         self.ng = ng
 
-        list_nn = [1, 2, 3]
-        list_ng = [2, 3]
+        list_nn = [2, 3]
+        list_ng = [1, 2]
         if ng in list_ng:
             if nn in list_nn:
                 self.gauss_points()
                 self.shape_function_value()
                 self.shape_function_partial()
             else:
-                print('invalid number of nodes for the truss element')
+                print('invalid number of nodes for the beam element')
         else:
-            print('invalid number of Gauss points for the truss element')
+            print('invalid number of Gauss points for the beam element')
 
     def gauss_points(self):
         ng = self.ng
@@ -381,12 +381,12 @@ class BeamElement(Element):
         xi = self.xi
 
         if nn == 2:
-            N_value = np.transpose([1/2.*(1-xi), 1/2.*(1+xi)])
-            N_value = np.reshape(N_value, (ng, 1, nn))
+            N_value = np.transpose([1/4.*(xi**3-3*xi+2), 1/8.*(xi**3-xi**2-xi+1), 1/4.*(-xi**3+3*xi+2), 1/8.*(xi**3+xi**2-xi-1)])
+            N_value = np.reshape(N_value, (ng, 1, nn*2))
 
-        if nn == 3:
-            N_value = np.transpose([1/2.*xi*(xi-1), (1-xi)*(xi+1), 1/2.*xi*(xi+1)])
-            N_value = np.reshape(N_value, (ng, 1, nn))
+#        if nn == 3:
+#            N_value = np.transpose([1/2.*xi*(xi-1), (1-xi)*(xi+1), 1/2.*xi*(xi+1)])
+#            N_value = np.reshape(N_value, (ng, 1, nn))
 
         self.N_ele = N_value
 
@@ -398,11 +398,13 @@ class BeamElement(Element):
         if nn == 2:
             pN_value = np.tile([-1/2, 1/2], (ng, 1, 1))
 
-        if nn == 3:
-            pN_value = np.transpose([1/2.*(2*xi-1), -2.*xi, 1/2.*(2*xi+1)])
-            pN_value = np.reshape(pN_value, (ng, 1, nn))
+#        if nn == 3:
+#            pN_value = np.transpose([1/2.*(2*xi-1), -2.*xi, 1/2.*(2*xi+1)])
+#            pN_value = np.reshape(pN_value, (ng, 1, nn))
 
         self.pN_ele = pN_value
+
+
 # truss = TrussElement(nn=2, ng=2)
 # print(truss.N_ele)
 # print(truss.pN_ele)

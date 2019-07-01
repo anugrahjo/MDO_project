@@ -92,15 +92,15 @@ class TComp(ExplicitComponent):
         partials['T', '*'] = 0
 
 
-if __name__ == '__main__':
-    from openmdao.api import Problem
-
-    prob = Problem()
-
-    comp = TComp(ng=4, NDIM=2, max_nn=2, NN=4, NEL=3, edof=4)
-    prob.model = comp
-    prob.setup()
-    prob.run_model()
-    prob.model.list_outputs()
-    print(prob['T'])
-    prob.check_partials(compact_print=True)
+#if __name__ == '__main__':
+#    from openmdao.api import Problem
+#
+#    prob = Problem()
+#
+#    comp = TComp(ng=4, NDIM=2, max_nn=2, NN=4, NEL=3, edof=4)
+#    prob.model = comp
+#    prob.setup()
+#    prob.run_model()
+#    prob.model.list_outputs()
+#    print(prob['T'])
+#    prob.check_partials(compact_print=True)

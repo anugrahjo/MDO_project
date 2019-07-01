@@ -14,51 +14,59 @@ class JacobianComp(ExplicitComponent):
         (NEL, max_ng, NDIM, max_nn) = np.shape(pN)
 
         self.add_output('J', shape=(NEL, max_ng, NDIM, NDIM))
-        self.add_output('pN_xy', shape=(NEL, max_ng, NDIM, NDIM))
-        self.declare_partials('J', '*', method = 'cs')
+        self.add_output('det_J', shape=(NEL, max_ng))
+#        self.declare_partials('J', '*', method = 'cs')
 
     def compute(self, inputs, outputs):
         pN = self.options['pN']
         Elem_Coords = self.options['Elem_Coords']
-        (NEL, max_ng, NDIM, max_nn) = np.shape(pN)
 
+        (NEL, max_ng, NDIM, max_nn) = np.shape(pN)
+        det_J = np.zeros((NEL, max_ng))
         J = np.einsum('ijkl, ilm -> ijkm', pN, Elem_Coords)
 
+        
+        for i in range(NEL):
+            for j in range(max_ng):
+                det_J[i,j] = np.linalg.det(J[i,j])
+                
         outputs['J'] = J
+        outputs['det_J'] = det_J
 
-    # def compute_partials(self, inputs, partials):
-    #     pass
+    def compute_partials(self, inputs, partials):
+        pass
 
 ## testing
-# if __name__ == '__main__':
-#     from openmdao.api import Problem
+#if __name__ == '__main__':
+#    from openmdao.api import Problem
 #
-#     prob = Problem()
-#     mesh = Mesh()
-#     node_coords1 = np.array([[0, 0], [1, 0], [1, 1], [0, 1], [2, 0], [2, 1]])
-#     ent1 = np.array([[1, 2, 3, 4], [2, 5, 6, 3]])
-#     elem_type1 = 2  # rectangular
-#     ndof1 = 2
+#    prob = Problem()
+#    mesh = Mesh()
+#    node_coords1 = np.array([[0, 0], [1, 0], [1, 1], [0, 1], [2, 0], [2, 1]])
+#    ent1 = np.array([[1, 2, 3, 4], [2, 5, 6, 3]])
+#    elem_type1 = 2  # rectangular
+#    ndof1 = 2
 #
-#     node_coords2 = np.array([[3, 0], [3, 1]])
-#     ent2 = np.array([[3, 7, 6], [8, 7, 6]])
-#     elem_type2 = 3  # triangular
-#     ndof2 = 2
+#    node_coords2 = np.array([[3, 0], [3, 1]])
+#    ent2 = np.array([[3, 7, 6], [8, 7, 6]])
+#    elem_type2 = 3  # triangular
+#    ndof2 = 2
+##
+##     # node_coords = np.array([[0, 0], [1, 0], [0, 1], [-1, 0]])
+##     # ent = np.array([[1, 2], [2, 3], [1, 3], [1, 4], [3, 4]])
+##     # elem_type = 1  # truss
+##     # ndof = 2
+##
+#    mesh.set_nodes(node_coords1, ndof1)
+#    mesh.add_elem_group(ent1, elem_type1)
+#    mesh.set_nodes(node_coords2, ndof2)
+#    mesh.add_elem_group(ent2, elem_type2)
 #
-#     # node_coords = np.array([[0, 0], [1, 0], [0, 1], [-1, 0]])
-#     # ent = np.array([[1, 2], [2, 3], [1, 3], [1, 4], [3, 4]])
-#     # elem_type = 1  # truss
-#     # ndof = 2
-#
-#     mesh.set_nodes(node_coords1, ndof1)
-#     mesh.add_elem_group(ent1, elem_type1)
-#     mesh.set_nodes(node_coords2, ndof2)
-#     mesh.add_elem_group(ent2, elem_type2)
-#
-#     comp = JacobianComp(pN=mesh.pN, Elem_Coords=mesh.Elem_Coords)
-#     prob.model = comp
-#     prob.setup()
-#     prob.run_model()
-#     prob.model.list_outputs()
-#     print(prob['J'])
-#     prob.check_partials(compact_print=True)
+#    comp = JacobianComp(pN=mesh.pN, Elem_Coords=mesh.Elem_Coords)
+#    prob.model = comp
+#    prob.setup()
+#    prob.run_model()
+#    prob.model.list_outputs()
+#    print(prob['J'])
+#    print(prob['det_J'])
+#    prob.check_partials(compact_print=True)

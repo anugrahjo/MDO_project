@@ -105,14 +105,14 @@ class Mesh():
             EFT_temp[:, 0:old_max_edof] = self.EFT * 1
             self.EFT = np.append(EFT_temp, eft_temp, axis = 0)
 
-        elem_coords = np.full((nel, max_nn, self.NDIM), -1)
+        elem_coords = np.full((nel, max_nn, self.NDIM), -1, dtype=float)
         for i in range(nel):
             for j in range(nn):
                 elem_coords[i][j][:] = self.Node_Coords[ent[i][j]-1][:]
         if self.Elem_Coords.size == 0:
             self.Elem_Coords = elem_coords * 1
         else:
-            Elem_coords = np.full((old_NEL, max_nn, self.NDIM), -1)
+            Elem_coords = np.full((old_NEL, max_nn, self.NDIM), -1, dtype=float)
             Elem_coords[:, 0:old_max_nn, :] = self.Elem_Coords * 1
             self.Elem_Coords = np.append(Elem_coords, elem_coords, axis = 0)
 
@@ -185,32 +185,35 @@ class Mesh():
         #     self.S = np.append(self.S, S_temp, axis = 0)
 
     
-# mesh = Mesh()
+#mesh = Mesh()
+
+ # test for multiple types of elements
+#node_coords1 = np.array([[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]])
+#ent1 = np.array([[1, 2, 5, 4], [2, 3, 6, 5]])
+#elem_type1 = 2  # rectangular
+#ndof1 = 2
+#print(node_coords1.dtype)
+#print(ent1.dtype)
+
+#node_coords2 = np.array([[3, 0], [3, 1]])
+#ent2 = np.array([[3, 7, 6], [8, 7, 6]])
+#elem_type2 = 3  # triangular
+#ndof2 = 2
 #
-# ## test for multiple types of elements
-# node_coords1 = np.array([[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]])
-# ent1 = np.array([[1, 2, 5, 4], [2, 3, 6, 5]])
-# elem_type1 = 2  # rectangular
-# ndof1 = 2
-#
-# node_coords2 = np.array([[3, 0], [3, 1]])
-# ent2 = np.array([[3, 7, 6], [8, 7, 6]])
-# elem_type2 = 3  # triangular
-# ndof2 = 2
-#
-# mesh.set_nodes(node_coords1, ndof1)
-# mesh.add_elem_group(ent1, elem_type1)
-# mesh.set_nodes(node_coords2, ndof2)
-# mesh.add_elem_group(ent2, elem_type2)
-#
-# print(node_coords1.shape)
-# print(ent1.shape)
+#mesh.set_nodes(node_coords1, ndof1)
+#mesh.add_elem_group(ent1, elem_type1)
+#mesh.set_nodes(node_coords2, ndof2)
+#mesh.add_elem_group(ent2, elem_type2)
+
+
 ### test for truss elements
 # node_coords = np.array([[0, 0], [1, 0], [0, 1], [-1, 0]])
 # ent = np.array([[1, 2], [2, 3], [1, 3], [1, 4], [3, 4]])
 # elem_type = 1  # truss
 # ndof = 2
-
-# mesh.set_nodes(node_coords, ndof)
-# mesh.add_elem_group(ent, elem_type)
 #
+#mesh.set_nodes(node_coords, ndof)
+#mesh.add_elem_group(ent, elem_type)
+
+
+
